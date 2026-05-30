@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FarmTrack - Season Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2c5f2e;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+        .header p {
+            margin: 5px 0 0;
+            opacity: 0.8;
+        }
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border-left: #2c5f2e;
+        }
+        .stat-card .label {
+            color: #888;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stat-card .value {
+            color: #2c5f2e;
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .field-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .field-card-header {
+            background-color: #2c5f2e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .field-card-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .field-card-header .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .field-card-body {
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+        }
+        .field-stat {
+            text-align: center;
+        }
+        .field-stat .fs-label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .field-stat .fs-value {
+            color: #2c5f2e;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .print-btn {
+            background-color: #2c5f2e;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .print-btn:hover {
+            background-color: #1e4020;
+        }
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2c5f2e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        @media print {
+            .back, .print-btn { display: none;}
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back">← Back to Dashboard</a>
+    
+    <div class="header">
+        <h1>Season Summary</h1>
+        <p>Manitoba Farm Input Cost Report - Agristability Ready</p>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="label">Total Fields</div>
+            <div class="value">{{ fields|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Total Season Cost</div>
+            <div class="value">${{ "%.2f"|format(grand_total) }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Avg Cost per Acre</div>
+            <<div class="value">{% set total_acres = fields.values()|sum(attribute='acres') %}{% if total_acres > 0 %}${{ "%.2f"|format(grand_total / total_acres) }}/acre{% else %}N/A{% endif %}</div>
+        </div>
+    </div>
+
+    {% for field_name, field in fields.items() %}
+    <div class="field-card">
+        <div class="field-card-header">
+            <h2>{{ field_name }}</h2>
+            <span class="badge">{{ field.acres }} acres</span>
+        </div>
+        <div class="field-card-body">
+            <div class="field-stat">
+                <div class="fs-label">Total Cost</div>
+                <div class="fs-value">${{ "%.2f"|format(field.total_cost) }}</div>
+            </div>
+            <div class="field-stat">
+                <div class="fs-label">Cost per Acre</div>
+                <div class="fs-value">${{ "%.2f"|format(field.cost_per_acre)}}/ac</div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if not fields %}
+    <div class="field-card">
+        <div class="field-body">
+            <p>No entries yet. <a href="/log">Log your first cost.</a></p>
+            </div>
+    </div>
+    {% endif %}
+
+    <a href="/download" class="print-btn" style="text-decoration:none; display:inline-block;">Download PDF Report</a>
+
+</body>
+</html>

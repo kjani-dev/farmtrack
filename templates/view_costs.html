@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FarmTrack - View Costs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c5f2e;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #2c5f2e;
+            color: white;
+        }
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2c5f2e;
+            text-decoration: none;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back">← Back to Dashboard</a>
+    <h1>Costs by Field</h1>
+    {% for field_name, field_data in fields.items() %}
+    <div class="card">
+        <div class="field-header">
+            <h2>{{ field_name }}</h2>
+            <span class="cost-per-acre">
+                ${{ "%.2f"|format(field_data.costs|sum(attribute='cost') / field_data.acres|float) }}/acre
+            </span>
+        </div>
+        <p>Field Size: {{ field_data.acres }} acres</p>
+
+        <table>
+            <tr>
+                <th>Input Type</th>
+                <th>Cost</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+            {% for cost in field_data.costs %}
+            <tr>
+                <td>{{ cost.input_type }}</td>
+                <td>${{ "%.2f"|format(cost.cost) }}</td>
+                <td>{{ cost.date }}</td>
+                <td>
+    <a href="/edit/{{ loop.index0 }}" style="color:#2c5f2e; margin-right:10px;">Edit</a>
+    <a href="/delete/{{ loop.index0 }}" style="color:red;">Delete</a>
+</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+    <td>Total</td>
+    <td>${{ "%.2f"|format(field_data.costs|sum(attribute='cost')) }}</td>
+    <td></td>
+    <td></td>
+</tr>
+        </table>
+    </div>
+    {% endfor %}
+
+    {% if not fields %}
+    <div class="card">
+        <p>No entries yet. <a href="/log">Log your first cost.</a></p>
+    </div>
+    {% endif %}
+</body>
+</html>

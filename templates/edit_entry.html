@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FarmTrack - Edit Entry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c5f2e;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #2c5f2e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2c5f2e;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back">← Back to View Costs</a>
+    <h1>Edit Entry</h1>
+
+    <div class="card">
+        <form method="POST">
+            <label>Field Name</label>
+            <input type="text" name="field_name" value="{{ entry.field_name }}" required>
+
+            <label>Field Size (acres)</label>
+            <input type="number" name="acres" value="{{ entry.acres }}" required>
+
+            <label>Input Type</label>
+            <select name="input_type" required>
+                <option value="">-- Select Input Type --</option>
+                <option {% if entry.input_type == 'Seed' %}selected{% endif %}>Seed</option>
+                <option {% if entry.input_type == 'Fertilizer - Nitrogen (Urea)' %}selected{% endif %}>Fertilizer - Nitrogen (Urea)</option>
+                <option {% if entry.input_type == 'Fertilizer - Phosphate' %}selected{% endif %}>Fertilizer - Phosphate</option>
+                <option {% if entry.input_type == 'Herbicide' %}selected{% endif %}>Herbicide</option>
+                <option {% if entry.input_type == 'Fungicide' %}selected{% endif %}>Fungicide</option>
+                <option {% if entry.input_type == 'Crop Insurance Premium' %}selected{% endif %}>Crop Insurance Premium</option>
+                <option {% if entry.input_type == 'Fuel & Oil' %}selected{% endif %}>Fuel & Oil</option>
+                <option {% if entry.input_type == 'Equipment Repairs' %}selected{% endif %}>Equipment Repairs</option>
+                <option {% if entry.input_type == 'Custom Work' %}selected{% endif %}>Custom Work</option>
+                <option {% if entry.input_type == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+
+            <label>Cost ($)</label>
+            <input type="number" name="cost" value="{{ entry.cost }}" required>
+
+            <label>Date</label>
+            <input type="date" name="date" value="{{ entry.date }}" required>
+
+            <button type="submit" class="btn">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>
