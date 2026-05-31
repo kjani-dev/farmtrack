@@ -21,7 +21,7 @@ def log_cost():
             'cost': request.form['cost'],
             'date': request.form['date']
         }
-        data_file = 'data/entries.json'
+        data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
         if os.path.exists(data_file):
             with open(data_file, 'r') as f:
                 entries = json.load(f)
@@ -35,7 +35,7 @@ def log_cost():
 
 @app.route('/view')
 def view_costs():
-    data_file = 'data/entries.json'
+    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
@@ -55,7 +55,7 @@ def view_costs():
 
 @app.route('/summary')
 def summary():
-    data_file = 'data/entries.json'
+    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
@@ -74,7 +74,7 @@ def summary():
 
 @app.route('/delete/<int:index>')
 def delete_entry(index):
-    data_file = 'data/entries.json'
+    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
@@ -86,7 +86,7 @@ def delete_entry(index):
 
 @app.route('/edit/<int:index>', methods=['GET', 'POST'])
 def edit_entry(index):
-    data_file = 'data/entries.json'
+    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
@@ -108,7 +108,7 @@ def edit_entry(index):
 
 @app.route('/download')
 def download_pdf():
-    data_file = 'data/entries.json'
+    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)

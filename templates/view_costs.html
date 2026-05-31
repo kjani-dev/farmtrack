@@ -1,95 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FarmTrack - View Costs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --green: #2c5f2e;
+            --green-dark: #1e4020;
+            --amber: #c97d10;
+            --bg: #f2ede4;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --muted: #6b7280;
+            --border: #e0d8cc;
+            --red: #c0392b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Barlow', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
         }
-        h1 {
-            color: #2c5f2e;
+        .top-bar {
+            background: var(--green);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 800px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #2c5f2e;
+        .back-btn { color: white; text-decoration: none; font-size: 20px; }
+        .top-bar h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
             color: white;
+            letter-spacing: 0.5px;
         }
-        .back {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #2c5f2e;
+        .content { padding: 20px 16px; }
+        .field-block { margin-bottom: 24px; }
+        .field-header {
+            background: var(--green);
+            border-radius: 10px 10px 0 0;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .field-header h2 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+        .field-meta { text-align: right; }
+        .field-meta .cpa {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #f0c060;
+        }
+        .field-meta .acres { font-size: 12px; color: rgba(255,255,255,0.65); }
+        .entries-list {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+        }
+        .entry-row {
+            display: flex;
+            align-items: center;
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--border);
+            gap: 10px;
+        }
+        .entry-row:last-child { border-bottom: none; }
+        .entry-row.total-row { background: #f8f5f0; }
+        .entry-info { flex: 1; min-width: 0; }
+        .entry-type {
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .entry-row.total-row .entry-type {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--green);
+        }
+        .entry-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .entry-cost {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--amber);
+            white-space: nowrap;
+        }
+        .entry-row.total-row .entry-cost { color: var(--green); font-size: 19px; }
+        .entry-actions { display: flex; gap: 10px; }
+        .action-link { font-size: 18px; text-decoration: none; padding: 4px; }
+        .empty-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 32px 20px;
+            text-align: center;
+        }
+        .empty-card p { color: var(--muted); margin-bottom: 12px; }
+        .empty-card a { color: var(--green); font-weight: 600; text-decoration: none; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 8px 0 12px;
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
             text-decoration: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 500;
+            padding: 6px 0;
         }
-        .total-row {
-            font-weight: bold;
-            background-color: #f9f9f9;
-        }
+        .nav-item.active { color: var(--green); }
+        .nav-item .nav-icon { font-size: 20px; }
     </style>
 </head>
 <body>
-    <a href="/" class="back">← Back to Dashboard</a>
-    <h1>Costs by Field</h1>
-    {% for field_name, field_data in fields.items() %}
-    <div class="card">
-        <div class="field-header">
-            <h2>{{ field_name }}</h2>
-            <span class="cost-per-acre">
-                ${{ "%.2f"|format(field_data.costs|sum(attribute='cost') / field_data.acres|float) }}/acre
-            </span>
+    <div class="top-bar">
+        <a href="/" class="back-btn">←</a>
+        <h1>COSTS BY FIELD</h1>
+    </div>
+    <div class="content">
+        {% for field_name, field_data in fields.items() %}
+        <div class="field-block">
+            <div class="field-header">
+                <h2>{{ field_name }}</h2>
+                <div class="field-meta">
+                    <div class="cpa">${{ "%.2f"|format(field_data.costs|sum(attribute='cost') / field_data.acres|float) }}/ac</div>
+                    <div class="acres">{{ field_data.acres }} acres</div>
+                </div>
+            </div>
+            <div class="entries-list">
+                {% for cost in field_data.costs %}
+                <div class="entry-row">
+                    <div class="entry-info">
+                        <div class="entry-type">{{ cost.input_type }}</div>
+                        <div class="entry-date">{{ cost.date }}</div>
+                    </div>
+                    <div class="entry-cost">${{ "%.2f"|format(cost.cost) }}</div>
+                    <div class="entry-actions">
+                        <a href="/edit/{{ loop.index0 }}" class="action-link">✏️</a>
+                        <a href="/delete/{{ loop.index0 }}" class="action-link">🗑️</a>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="entry-row total-row">
+                    <div class="entry-info">
+                        <div class="entry-type">TOTAL</div>
+                    </div>
+                    <div class="entry-cost">${{ "%.2f"|format(field_data.costs|sum(attribute='cost')) }}</div>
+                    <div style="width:56px;"></div>
+                </div>
+            </div>
         </div>
-        <p>Field Size: {{ field_data.acres }} acres</p>
-
-        <table>
-            <tr>
-                <th>Input Type</th>
-                <th>Cost</th>
-                <th>Date</th>
-                <th>Action</th>
-            </tr>
-            {% for cost in field_data.costs %}
-            <tr>
-                <td>{{ cost.input_type }}</td>
-                <td>${{ "%.2f"|format(cost.cost) }}</td>
-                <td>{{ cost.date }}</td>
-                <td>
-    <a href="/edit/{{ loop.index0 }}" style="color:#2c5f2e; margin-right:10px;">Edit</a>
-    <a href="/delete/{{ loop.index0 }}" style="color:red;">Delete</a>
-</td>
-            </tr>
-            {% endfor %}
-            <tr class="total-row">
-    <td>Total</td>
-    <td>${{ "%.2f"|format(field_data.costs|sum(attribute='cost')) }}</td>
-    <td></td>
-    <td></td>
-</tr>
-        </table>
+        {% endfor %}
+        {% if not fields %}
+        <div class="empty-card">
+            <p>No entries yet.</p>
+            <a href="/log">Log your first input cost →</a>
+        </div>
+        {% endif %}
     </div>
-    {% endfor %}
-
-    {% if not fields %}
-    <div class="card">
-        <p>No entries yet. <a href="/log">Log your first cost.</a></p>
-    </div>
-    {% endif %}
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item active">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
 </body>
 </html>

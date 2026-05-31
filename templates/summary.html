@@ -1,174 +1,274 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FarmTrack - Season Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --green: #2c5f2e;
+            --green-dark: #1e4020;
+            --amber: #c97d10;
+            --bg: #f2ede4;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --muted: #6b7280;
+            --border: #e0d8cc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f0;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Barlow', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 100px;
         }
-        .header {
-            background-color: #2c5f2e;
+        .hero {
+            background: var(--green);
+            padding: 20px 20px 24px;
+        }
+        .hero-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .back-btn { color: white; text-decoration: none; font-size: 20px; }
+        .hero-top h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
             color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
+            letter-spacing: 0.5px;
         }
-        .header h1 {
-            margin: 0;
-            font-size: 26px;
+        .hero-stat .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 4px;
         }
-        .header p {
-            margin: 5px 0 0;
-            opacity: 0.8;
+        .hero-stat .stat-value {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 44px;
+            font-weight: 700;
+            color: #f0c060;
+            line-height: 1;
         }
         .stats-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 16px 16px 0;
         }
         .stat-card {
-            background: white;
-            padding: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 10px;
-            flex: 1;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            border-left: #2c5f2e;
+            padding: 14px 16px;
         }
-        .stat-card .label {
-            color: #888;
-            font-size: 13px;
+        .stat-card .sc-label {
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 6px;
         }
-        .stat-card .value {
-            color: #2c5f2e;
-            font-size: 28px;
-            font-weight: bold;
-            margin-top: 5px;
+        .stat-card .sc-value {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--green);
+        }
+        .content { padding: 16px; }
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 12px;
+            margin-top: 4px;
         }
         .field-card {
-            background: white;
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             overflow: hidden;
+            margin-bottom: 12px;
         }
         .field-card-header {
-            background-color: #2c5f2e;
-            color: white;
-            padding: 15px 20px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .field-card-header h2 {
-            margin: 0;
+        .field-name {
+            font-family: 'Barlow Condensed', sans-serif;
             font-size: 18px;
+            font-weight: 700;
+            color: var(--green);
         }
-        .field-card-header .badge {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 12px;
+        .field-acres {
+            font-size: 13px;
+            color: var(--muted);
+            background: var(--bg);
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 14px;
         }
         .field-card-body {
-            padding: 20px;
-            display: flex;
-            gap: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
         }
         .field-stat {
-            text-align: center;
+            padding: 14px 16px;
+            border-right: 1px solid var(--border);
         }
+        .field-stat:last-child { border-right: none; }
         .field-stat .fs-label {
-            color: #888;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 4px;
         }
         .field-stat .fs-value {
-            color: #2c5f2e;
+            font-family: 'Barlow Condensed', sans-serif;
             font-size: 22px;
-            font-weight: bold;
+            font-weight: 700;
+            color: var(--amber);
         }
-        .print-btn {
-            background-color: #2c5f2e;
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: var(--green);
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
             cursor: pointer;
-            margin-top: 10px;
-        }
-        .print-btn:hover {
-            background-color: #1e4020;
-        }
-        .back {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #2c5f2e;
+            text-align: center;
             text-decoration: none;
-            font-weight: bold;
+            margin-top: 8px;
         }
+        .download-btn:active { background: var(--green-dark); }
+        .download-sub {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        .empty-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 32px 20px;
+            text-align: center;
+        }
+        .empty-card p { color: var(--muted); margin-bottom: 12px; }
+        .empty-card a { color: var(--green); font-weight: 600; text-decoration: none; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 8px 0 12px;
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 500;
+            padding: 6px 0;
+        }
+        .nav-item.active { color: var(--green); }
+        .nav-item .nav-icon { font-size: 20px; }
         @media print {
-            .back, .print-btn { display: none;}
-            body { background: white; }
+            .bottom-nav, .download-btn, .download-sub, .back-btn { display: none; }
+            body { background: white; padding: 0; }
         }
     </style>
 </head>
 <body>
-    <a href="/" class="back">← Back to Dashboard</a>
-    
-    <div class="header">
-        <h1>Season Summary</h1>
-        <p>Manitoba Farm Input Cost Report - Agristability Ready</p>
+    <div class="hero">
+        <div class="hero-top">
+            <a href="/" class="back-btn">←</a>
+            <h1>SEASON SUMMARY</h1>
+        </div>
+        <div class="hero-stat">
+            <div class="stat-label">Total Season Cost</div>
+            <div class="stat-value">${{ "%.2f"|format(grand_total) }}</div>
+        </div>
     </div>
-
+    {% set total_acres = fields.values()|sum(attribute='acres') %}
     <div class="stats-row">
         <div class="stat-card">
-            <div class="label">Total Fields</div>
-            <div class="value">{{ fields|length }}</div>
+            <div class="sc-label">Total Fields</div>
+            <div class="sc-value">{{ fields|length }}</div>
         </div>
         <div class="stat-card">
-            <div class="label">Total Season Cost</div>
-            <div class="value">${{ "%.2f"|format(grand_total) }}</div>
-        </div>
-        <div class="stat-card">
-            <div class="label">Avg Cost per Acre</div>
-            <<div class="value">{% set total_acres = fields.values()|sum(attribute='acres') %}{% if total_acres > 0 %}${{ "%.2f"|format(grand_total / total_acres) }}/acre{% else %}N/A{% endif %}</div>
+            <div class="sc-label">Avg Cost/Acre</div>
+            <div class="sc-value">{% if total_acres > 0 %}${{ "%.2f"|format(grand_total / total_acres) }}{% else %}—{% endif %}</div>
         </div>
     </div>
-
-    {% for field_name, field in fields.items() %}
-    <div class="field-card">
-        <div class="field-card-header">
-            <h2>{{ field_name }}</h2>
-            <span class="badge">{{ field.acres }} acres</span>
+    <div class="content">
+        {% if fields %}
+        <p class="section-label">Fields</p>
+        {% for field_name, field in fields.items() %}
+        <div class="field-card">
+            <div class="field-card-header">
+                <div class="field-name">{{ field_name }}</div>
+                <div class="field-acres">{{ field.acres }} ac</div>
+            </div>
+            <div class="field-card-body">
+                <div class="field-stat">
+                    <div class="fs-label">Total Cost</div>
+                    <div class="fs-value">${{ "%.2f"|format(field.total_cost) }}</div>
+                </div>
+                <div class="field-stat">
+                    <div class="fs-label">Per Acre</div>
+                    <div class="fs-value">${{ "%.2f"|format(field.cost_per_acre) }}/ac</div>
+                </div>
+            </div>
         </div>
-        <div class="field-card-body">
-            <div class="field-stat">
-                <div class="fs-label">Total Cost</div>
-                <div class="fs-value">${{ "%.2f"|format(field.total_cost) }}</div>
-            </div>
-            <div class="field-stat">
-                <div class="fs-label">Cost per Acre</div>
-                <div class="fs-value">${{ "%.2f"|format(field.cost_per_acre)}}/ac</div>
-            </div>
+        {% endfor %}
+        <a href="/download" class="download-btn">⬇ DOWNLOAD PDF REPORT</a>
+        <p class="download-sub">Manitoba Farm Input Cost Report</p>
+        {% else %}
+        <div class="empty-card">
+            <p>No entries yet.</p>
+            <a href="/log">Log your first input cost →</a>
         </div>
+        {% endif %}
     </div>
-    {% endfor %}
-
-    {% if not fields %}
-    <div class="field-card">
-        <div class="field-body">
-            <p>No entries yet. <a href="/log">Log your first cost.</a></p>
-            </div>
-    </div>
-    {% endif %}
-
-    <a href="/download" class="print-btn" style="text-decoration:none; display:inline-block;">Download PDF Report</a>
-
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item active">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
 </body>
 </html>

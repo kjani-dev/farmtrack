@@ -1,52 +1,185 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FarmTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --green: #2c5f2e;
+            --green-dark: #1e4020;
+            --amber: #c97d10;
+            --bg: #f2ede4;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --muted: #6b7280;
+            --border: #e0d8cc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Barlow', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
         }
-        h1 {
-            color: #2c5f2e;
+        .top-bar {
+            background: var(--green);
+            padding: 20px 20px 16px;
         }
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
+        .top-bar h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
         }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        .top-bar p {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            margin-top: 2px;
         }
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #2c5f2e;
+        .content { padding: 20px 16px; }
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+        .primary-action {
+            display: block;
+            background: var(--green);
             color: white;
             text-decoration: none;
-            border-radius: 6px;
-            margin-right: 10px;
-            margin-top: 10px;
+            border-radius: 10px;
+            padding: 22px 20px;
+            margin-bottom: 12px;
         }
-        .btn:hover {
-            background-color: #1e4020;
+        .primary-action .action-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
+        .primary-action .action-sub {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 3px;
+        }
+        .primary-action .action-arrow {
+            float: right;
+            font-size: 24px;
+            margin-top: -2px;
+        }
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .action-card {
+            display: block;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px 16px;
+            text-decoration: none;
+            color: var(--text);
+        }
+        .action-card .ac-icon { font-size: 22px; margin-bottom: 8px; }
+        .action-card .ac-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--green);
+        }
+        .action-card .ac-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .info-strip {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .info-strip .dot {
+            width: 8px; height: 8px;
+            background: var(--amber);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .info-strip p { font-size: 13px; color: var(--muted); }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 8px 0 12px;
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 500;
+            padding: 6px 0;
+        }
+        .nav-item.active { color: var(--green); }
+        .nav-item .nav-icon { font-size: 20px; }
     </style>
 </head>
 <body>
-    <h1>FarmTrack</h1>
-    <p class="subtitle">Manitoba Farm Input Cost Tracker</p>
-
-    <div class="card">
-        <h2>Quick Actions</h2>
-        <a href="/log" class="btn">Log Input Cost</a>
-        <a href="/view" class="btn">View Costs by Field</a>
-        <a href="/summary" class="btn">Season Summary</a>
+    <div class="top-bar">
+        <h1>FARMTRACK</h1>
+        <p>Manitoba Farm Input Cost Tracker</p>
     </div>
+    <div class="content">
+        <p class="section-label">Reports</p>
+        <a href="/summary" class="primary-action">
+            <span class="action-arrow">→</span>
+            <div class="action-label">Season Summary</div>
+            <div class="action-sub">View total costs &amp; cost per acre</div>
+        </a>
+        <p class="section-label">Tools</p>
+        <div class="actions-grid">
+            <a href="/log" class="action-card">
+                <div class="ac-icon">📝</div>
+                <div class="ac-label">Log Cost</div>
+                <div class="ac-sub">Add input entry</div>
+            </a>
+            <a href="/view" class="action-card">
+                <div class="ac-icon">🌾</div>
+                <div class="ac-label">By Field</div>
+                <div class="ac-sub">View &amp; edit entries</div>
+            </a>
+        </div>
+        <div class="info-strip">
+            <div class="dot"></div>
+            <p>Track seed, fertilizer, herbicide and all input costs. Download a PDF report anytime.</p>
+        </div>
+    </div>
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item active">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
 </body>
 </html>
