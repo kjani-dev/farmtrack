@@ -78,6 +78,8 @@
             background-position: right 14px center;
             padding-right: 36px;
         }
+        .new-field-input { display: none; margin-top: 10px; }
+        .new-field-input.visible { display: block; }
         .submit-btn {
             display: block;
             width: 100%;
@@ -128,11 +130,20 @@
             <form method="POST">
                 <div class="field-group">
                     <label>Field Name</label>
-                    <input type="text" name="field_name" placeholder="e.g. North Quarter" required>
+                    <select name="field_name" id="field_select" onchange="toggleNewField(this)" required>
+                        <option value="">— Select Field —</option>
+                        {% for name, acres in existing_fields %}
+                        <option value="{{ name }}" data-acres="{{ acres }}">{{ name }} ({{ acres }} ac)</option>
+                        {% endfor %}
+                        <option value="__new__">+ Add new field</option>
+                    </select>
+                    <div class="new-field-input" id="new_field_wrap">
+                        <input type="text" name="new_field_name" placeholder="Enter new field name">
+                    </div>
                 </div>
                 <div class="field-group">
                     <label>Field Size (acres)</label>
-                    <input type="number" name="acres" placeholder="e.g. 320" required>
+                    <input type="number" name="acres" id="acres_input" placeholder="e.g. 320" required>
                 </div>
                 <div class="field-group">
                     <label>Input Type</label>
@@ -176,5 +187,24 @@
             <span class="nav-icon">📊</span>Summary
         </a>
     </nav>
+    <script>
+        function toggleNewField(select) {
+            const wrap = document.getElementById('new_field_wrap');
+            const acresInput = document.getElementById('acres_input');
+            if (select.value === '__new__') {
+                wrap.classList.add('visible');
+                acresInput.value = '';
+                acresInput.readOnly = false;
+            } else {
+                wrap.classList.remove('visible');
+                const selected = select.options[select.selectedIndex];
+                const acres = selected.getAttribute('data-acres');
+                if (acres) {
+                    acresInput.value = acres;
+                    acresInput.readOnly = true;
+                }
+            }
+        }
+    </script>
 </body>
 </html>

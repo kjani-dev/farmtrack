@@ -13,15 +13,18 @@ def dashboard():
 
 @app.route('/log', methods=['GET', 'POST'])
 def log_cost():
+    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
     if request.method == 'POST':
+        field_name = request.form['field_name']
+        if field_name == '__new__':
+            field_name = request.form['new_field_name'].strip()
         entry = {
-            'field_name': request.form['field_name'],
+            'field_name': field_name,
             'acres': request.form['acres'],
             'input_type': request.form['input_type'],
             'cost': request.form['cost'],
             'date': request.form['date']
         }
-        data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
         if os.path.exists(data_file):
             with open(data_file, 'r') as f:
                 entries = json.load(f)
@@ -31,7 +34,15 @@ def log_cost():
         with open(data_file, 'w') as f:
             json.dump(entries, f)
         return redirect(url_for('dashboard'))
-    return render_template('log_cost.html')
+    if os.path.exists(data_file):
+        with open(data_file, 'r') as f:
+            entries = json.load(f)
+        existing_fields = sorted(set(
+            (e['field_name'], e['acres']) for e in entries
+        ), key=lambda x: x[0])
+    else:
+        existing_fields = []
+    return render_template('log_cost.html', existing_fields=existing_fields)
 
 @app.route('/view')
 def view_costs():
