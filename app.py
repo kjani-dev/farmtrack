@@ -111,6 +111,8 @@ def edit_entry(index):
             'acres': request.form['acres'],
             'input_type': request.form['input_type'],
             'cost': request.form['cost'],
+            'quantity': request.form.get('quantity', ''),
+            'quantity_unit': request.form.get('quantity_unit', ''),
             'date': request.form['date']
         }
         with open(data_file, 'w') as f:
