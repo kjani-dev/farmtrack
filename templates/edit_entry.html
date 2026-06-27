@@ -1,94 +1,201 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FarmTrack - Edit Entry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --green: #2c5f2e;
+            --green-dark: #1e4020;
+            --amber: #c97d10;
+            --bg: #f2ede4;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --muted: #6b7280;
+            --border: #e0d8cc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
+            font-family: 'Barlow', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        .top-bar {
+            background: var(--green);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .back-btn { color: white; text-decoration: none; font-size: 20px; }
+        .top-bar h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+        .content { padding: 20px 16px; }
+        .form-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             padding: 20px;
         }
-        h1 {
-            color: #2c5f2e;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 500px;
-        }
+        .field-group { margin-bottom: 20px; }
         label {
             display: block;
-            margin-top: 15px;
-            font-weight: bold;
-            color: #333;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 8px;
         }
         input, select {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 14px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             font-size: 16px;
-            box-sizing: border-box;
+            font-family: 'Barlow', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            -webkit-appearance: none;
         }
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #2c5f2e;
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--green);
+            background: white;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--green);
             color: white;
             border: none;
-            border-radius: 6px;
-            margin-top: 20px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
             cursor: pointer;
-            width: 100%;
+            margin-top: 8px;
         }
-        .back {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #2c5f2e;
+        .submit-btn:active { background: var(--green-dark); }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            padding: 8px 0 12px;
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
             text-decoration: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 500;
+            padding: 6px 0;
         }
+        .nav-item.active { color: var(--green); }
+        .nav-item .nav-icon { font-size: 20px; }
     </style>
 </head>
 <body>
-    <a href="/" class="back">← Back to View Costs</a>
-    <h1>Edit Entry</h1>
-
-    <div class="card">
-        <form method="POST">
-            <label>Field Name</label>
-            <input type="text" name="field_name" value="{{ entry.field_name }}" required>
-
-            <label>Field Size (acres)</label>
-            <input type="number" name="acres" value="{{ entry.acres }}" required>
-
-            <label>Input Type</label>
-            <select name="input_type" required>
-                <option value="">-- Select Input Type --</option>
-                <option {% if entry.input_type == 'Seed' %}selected{% endif %}>Seed</option>
-                <option {% if entry.input_type == 'Fertilizer - Nitrogen (Urea)' %}selected{% endif %}>Fertilizer - Nitrogen (Urea)</option>
-                <option {% if entry.input_type == 'Fertilizer - Phosphate' %}selected{% endif %}>Fertilizer - Phosphate</option>
-                <option {% if entry.input_type == 'Herbicide' %}selected{% endif %}>Herbicide</option>
-                <option {% if entry.input_type == 'Fungicide' %}selected{% endif %}>Fungicide</option>
-                <option {% if entry.input_type == 'Crop Insurance Premium' %}selected{% endif %}>Crop Insurance Premium</option>
-                <option {% if entry.input_type == 'Fuel & Oil' %}selected{% endif %}>Fuel & Oil</option>
-                <option {% if entry.input_type == 'Equipment Repairs' %}selected{% endif %}>Equipment Repairs</option>
-                <option {% if entry.input_type == 'Custom Work' %}selected{% endif %}>Custom Work</option>
-                <option {% if entry.input_type == 'Other' %}selected{% endif %}>Other</option>
-            </select>
-
-            <label>Cost ($)</label>
-            <input type="number" name="cost" value="{{ entry.cost }}" required>
-
-            <label>Date</label>
-            <input type="date" name="date" value="{{ entry.date }}" required>
-
-            <button type="submit" class="btn">Save Changes</button>
-        </form>
+    <div class="top-bar">
+        <a href="/view" class="back-btn">←</a>
+        <h1>EDIT ENTRY</h1>
     </div>
+    <div class="content">
+        <div class="form-card">
+            <form method="POST">
+                <div class="field-group">
+                    <label>Field Name</label>
+                    <input type="text" name="field_name" value="{{ entry.field_name }}" required>
+                </div>
+                <div class="field-group">
+                    <label>Field Size (acres)</label>
+                    <input type="number" name="acres" value="{{ entry.acres }}" required>
+                </div>
+                <div class="field-group">
+                    <label>Input Type</label>
+                    <select name="input_type" required onchange="toggleQuantity(this)">
+                        <option value="">— Select Input Type —</option>
+                        <option {% if entry.input_type == 'Seed' %}selected{% endif %}>Seed</option>
+                        <option {% if entry.input_type == '46-0-0 (Urea — Nitrogen)' %}selected{% endif %}>46-0-0 (Urea — Nitrogen)</option>
+                        <option {% if entry.input_type == '11-52-0 (MAP — Phosphate)' %}selected{% endif %}>11-52-0 (MAP — Phosphate)</option>
+                        <option {% if entry.input_type == '17-0-0 (Sulphur)' %}selected{% endif %}>17-0-0 (Sulphur)</option>
+                        <option {% if entry.input_type == 'Herbicide' %}selected{% endif %}>Herbicide</option>
+                        <option {% if entry.input_type == 'Fungicide' %}selected{% endif %}>Fungicide</option>
+                        <option {% if entry.input_type == 'Crop Insurance Premium' %}selected{% endif %}>Crop Insurance Premium</option>
+                        <option {% if entry.input_type == 'Fuel & Oil' %}selected{% endif %}>Fuel & Oil</option>
+                        <option {% if entry.input_type == 'Equipment Repairs' %}selected{% endif %}>Equipment Repairs</option>
+                        <option {% if entry.input_type == 'Custom Work' %}selected{% endif %}>Custom Work</option>
+                        <option {% if entry.input_type == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+                <div class="field-group" id="quantity_wrap" style="display:none;">
+                    <label>Quantity (lbs/acre)</label>
+                    <input type="number" name="quantity" id="quantity_input" value="{{ entry.quantity or '' }}" placeholder="e.g. 81" step="0.1">
+                    <input type="hidden" name="quantity_unit" value="lbs/acre">
+                </div>
+                <div class="field-group">
+                    <label>Cost ($)</label>
+                    <input type="number" name="cost" value="{{ entry.cost }}" required>
+                </div>
+                <div class="field-group">
+                    <label>Date</label>
+                    <input type="date" name="date" value="{{ entry.date }}" required>
+                </div>
+                <button type="submit" class="submit-btn">SAVE CHANGES</button>
+            </form>
+        </div>
+    </div>
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item active">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
+    <script>
+        const FERTILIZERS = ['46-0-0 (Urea — Nitrogen)', '11-52-0 (MAP — Phosphate)', '17-0-0 (Sulphur)'];
+
+        function toggleQuantity(select) {
+            const wrap = document.getElementById('quantity_wrap');
+            const isFertilizer = FERTILIZERS.includes(select.value);
+            wrap.style.display = isFertilizer ? 'block' : 'none';
+        }
+
+        // Show quantity on page load if entry already has a fertilizer type
+        window.addEventListener('DOMContentLoaded', () => {
+            const select = document.querySelector('select[name="input_type"]');
+            toggleQuantity(select);
+        });
+    </script>
 </body>
 </html>

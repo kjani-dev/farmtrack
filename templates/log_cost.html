@@ -147,11 +147,12 @@
                 </div>
                 <div class="field-group">
                     <label>Input Type</label>
-                    <select name="input_type" required>
+                    <select name="input_type" required onchange="toggleQuantity(this)">
                         <option value="">— Select Input Type —</option>
                         <option>Seed</option>
-                        <option>Fertilizer - Nitrogen (Urea)</option>
-                        <option>Fertilizer - Phosphate</option>
+                        <option>46-0-0 (Urea — Nitrogen)</option>
+                        <option>11-52-0 (MAP — Phosphate)</option>
+                        <option>17-0-0 (Sulphur)</option>
                         <option>Herbicide</option>
                         <option>Fungicide</option>
                         <option>Crop Insurance Premium</option>
@@ -160,6 +161,11 @@
                         <option>Custom Work</option>
                         <option>Other</option>
                     </select>
+                </div>
+                <div class="field-group" id="quantity_wrap" style="display:none;">
+                    <label>Quantity (lbs/acre)</label>
+                    <input type="number" name="quantity" id="quantity_input" placeholder="e.g. 81" step="0.1">
+                    <input type="hidden" name="quantity_unit" value="lbs/acre">
                 </div>
                 <div class="field-group">
                     <label>Cost ($)</label>
@@ -188,6 +194,15 @@
         </a>
     </nav>
     <script>
+        const FERTILIZERS = ['46-0-0 (Urea — Nitrogen)', '11-52-0 (MAP — Phosphate)', '17-0-0 (Sulphur)'];
+
+        function toggleQuantity(select) {
+            const wrap = document.getElementById('quantity_wrap');
+            const isFertilizer = FERTILIZERS.includes(select.value);
+            wrap.style.display = isFertilizer ? 'block' : 'none';
+            if (!isFertilizer) document.getElementById('quantity_input').value = '';
+        }
+
         function toggleNewField(select) {
             const wrap = document.getElementById('new_field_wrap');
             const acresInput = document.getElementById('acres_input');

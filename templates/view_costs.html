@@ -159,7 +159,7 @@
                 <div class="entry-row">
                     <div class="entry-info">
                         <div class="entry-type">{{ cost.input_type }}</div>
-                        <div class="entry-date">{{ cost.date }}</div>
+                        <div class="entry-date">{{ cost.date }}{% if cost.quantity %} · {{ cost.quantity }} lbs/ac{% endif %}</div>
                     </div>
                     <div class="entry-cost">${{ "%.2f"|format(cost.cost) }}</div>
                     <div class="entry-actions">

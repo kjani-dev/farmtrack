@@ -23,6 +23,8 @@ def log_cost():
             'acres': request.form['acres'],
             'input_type': request.form['input_type'],
             'cost': request.form['cost'],
+            'quantity': request.form.get('quantity', ''),
+            'quantity_unit': request.form.get('quantity_unit', ''),
             'date': request.form['date']
         }
         if os.path.exists(data_file):
