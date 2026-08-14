@@ -163,8 +163,8 @@
                     </div>
                     <div class="entry-cost">${{ "%.2f"|format(cost.cost) }}</div>
                     <div class="entry-actions">
-                        <a href="/edit/{{ loop.index0 }}" class="action-link">✏️</a>
-                        <a href="/delete/{{ loop.index0 }}" class="action-link">🗑️</a>
+                        <a href="/edit/{{ cost.real_index }}" class="action-link">✏️</a>
+                        <a href="/delete/{{ cost.real_index }}" class="action-link">🗑️</a>
                     </div>
                 </div>
                 {% endfor %}

@@ -55,14 +55,16 @@ def view_costs():
     else:
         entries = []
     fields = {}
-    for entry in entries:
+    for real_index, entry in enumerate(entries):
         name = entry['field_name']
         if name not in fields:
             fields[name] = {'acres': entry['acres'], 'costs': []}
         fields[name]['costs'].append({
             'input_type': entry['input_type'],
             'cost': float(entry['cost']),
-            'date': entry['date']
+            'date': entry['date'],
+            'quantity': entry.get('quantity', ''),
+            'real_index': real_index
         })
     return render_template('view_costs.html', fields=fields)
 
