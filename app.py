@@ -18,10 +18,14 @@ def log_cost():
         field_name = request.form['field_name']
         if field_name == '__new__':
             field_name = request.form['new_field_name'].strip()
+        input_type = request.form['input_type']
+        if input_type == '__custom__':
+            input_type = request.form.get('custom_input_type', '').strip()
+
         entry = {
             'field_name': field_name,
             'acres': request.form['acres'],
-            'input_type': request.form['input_type'],
+            'input_type': input_type,
             'cost': request.form['cost'],
             'quantity': request.form.get('quantity', ''),
             'quantity_unit': request.form.get('quantity_unit', ''),
@@ -108,10 +112,14 @@ def edit_entry(index):
     else:
         entries = []
     if request.method == 'POST':
+        input_type = request.form['input_type']
+        if input_type == '__custom__':
+            input_type = request.form.get('custom_input_type', '').strip()
+
         entries[index] = {
             'field_name': request.form['field_name'],
             'acres': request.form['acres'],
-            'input_type': request.form['input_type'],
+            'input_type': input_type,
             'cost': request.form['cost'],
             'quantity': request.form.get('quantity', ''),
             'quantity_unit': request.form.get('quantity_unit', ''),

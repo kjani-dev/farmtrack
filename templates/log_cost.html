@@ -147,20 +147,30 @@
                 </div>
                 <div class="field-group">
                     <label>Input Type</label>
-                    <select name="input_type" required onchange="toggleQuantity(this)">
+                    <select name="input_type" id="input_type_select" required onchange="toggleQuantity(this); toggleCustomInput(this);">
                         <option value="">— Select Input Type —</option>
                         <option>Seed</option>
                         <option>46-0-0 (Urea — Nitrogen)</option>
+                        <option>82-0-0 (NH3 — Nitrogen)</option>
+                        <option>28-0-0 (Liquid — Nitrogen)</option>
                         <option>11-52-0 (MAP — Phosphate)</option>
-                        <option>17-0-0 (Sulphur)</option>
+                        <option>0-0-60 (Potash)</option>
+                        <option>20.5-0-0-24 (Sulphur)</option>
+                        <option>MES S15 (13-33-0-15)</option>
                         <option>Herbicide</option>
                         <option>Fungicide</option>
+                        <option>Insecticide</option>
+                        <option>PPE</option>
+                        <option>Labour (Arm's Length)</option>
                         <option>Crop Insurance Premium</option>
                         <option>Fuel &amp; Oil</option>
                         <option>Equipment Repairs</option>
                         <option>Custom Work</option>
-                        <option>Other</option>
+                        <option value="__custom__">Other — specify</option>
                     </select>
+                    <div class="new-field-input" id="custom_input_wrap">
+                        <input type="text" name="custom_input_type" placeholder="Enter custom input type">
+                    </div>
                 </div>
                 <div class="field-group" id="quantity_wrap" style="display:none;">
                     <label>Quantity (lbs/acre)</label>
@@ -194,7 +204,12 @@
         </a>
     </nav>
     <script>
-        const FERTILIZERS = ['46-0-0 (Urea — Nitrogen)', '11-52-0 (MAP — Phosphate)', '17-0-0 (Sulphur)'];
+        const FERTILIZERS = ['46-0-0 (Urea — Nitrogen)', '82-0-0 (NH3 — Nitrogen)', '28-0-0 (Liquid — Nitrogen)', '11-52-0 (MAP — Phosphate)', '0-0-60 (Potash)', '20.5-0-0-24 (Sulphur)', 'MES S15 (13-33-0-15)'];
+
+        function toggleCustomInput(select) {
+            const wrap = document.getElementById('custom_input_wrap');
+            wrap.classList.toggle('visible', select.value === '__custom__');
+        }
 
         function toggleQuantity(select) {
             const wrap = document.getElementById('quantity_wrap');
