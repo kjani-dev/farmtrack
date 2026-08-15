@@ -192,6 +192,22 @@
                     <input type="number" name="quantity" id="quantity_input" placeholder="e.g. 81" step="0.1">
                     <input type="hidden" name="quantity_unit" value="lbs/acre">
                 </div>
+                <div class="field-group" id="herbicide_group_wrap" style="display:none;">
+                    <label>Herbicide Group</label>
+                    <select name="herbicide_group" id="herbicide_group_select">
+                        <option value="">— Select Group —</option>
+                        <option>Group 1</option>
+                        <option>Group 2</option>
+                        <option>Group 4</option>
+                        <option>Group 6</option>
+                        <option>Group 9</option>
+                        <option>Group 10</option>
+                        <option>Group 14</option>
+                        <option>Group 15</option>
+                        <option>Group 27</option>
+                        <option>Other</option>
+                    </select>
+                </div>
                 <div class="field-group">
                     <label>Cost ($)</label>
                     <input type="number" name="cost" placeholder="e.g. 4500" required>
@@ -231,6 +247,11 @@
             const isFertilizer = FERTILIZERS.includes(select.value);
             wrap.style.display = isFertilizer ? 'block' : 'none';
             if (!isFertilizer) document.getElementById('quantity_input').value = '';
+
+            const herbWrap = document.getElementById('herbicide_group_wrap');
+            const isHerbicide = select.value === 'Herbicide';
+            herbWrap.style.display = isHerbicide ? 'block' : 'none';
+            if (!isHerbicide) document.getElementById('herbicide_group_select').value = '';
         }
 
         function toggleNewField(select) {

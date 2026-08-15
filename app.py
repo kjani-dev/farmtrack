@@ -30,6 +30,7 @@ def log_cost():
             'cost': request.form['cost'],
             'quantity': request.form.get('quantity', ''),
             'quantity_unit': request.form.get('quantity_unit', ''),
+            'herbicide_group': request.form.get('herbicide_group', ''),
             'date': request.form['date']
         }
         if os.path.exists(data_file):
@@ -71,6 +72,7 @@ def view_costs():
             'cost': float(entry['cost']),
             'date': entry['date'],
             'quantity': entry.get('quantity', ''),
+            'herbicide_group': entry.get('herbicide_group', ''),
             'real_index': real_index
         })
     return render_template('view_costs.html', fields=fields)
@@ -129,6 +131,7 @@ def edit_entry(index):
             'cost': request.form['cost'],
             'quantity': request.form.get('quantity', ''),
             'quantity_unit': request.form.get('quantity_unit', ''),
+            'herbicide_group': request.form.get('herbicide_group', ''),
             'date': request.form['date']
         }
         with open(data_file, 'w') as f:
