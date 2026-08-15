@@ -25,6 +25,7 @@ def log_cost():
         entry = {
             'field_name': field_name,
             'acres': request.form['acres'],
+            'crop_type': request.form.get('crop_type', ''),
             'input_type': input_type,
             'cost': request.form['cost'],
             'quantity': request.form.get('quantity', ''),
@@ -62,7 +63,9 @@ def view_costs():
     for real_index, entry in enumerate(entries):
         name = entry['field_name']
         if name not in fields:
-            fields[name] = {'acres': entry['acres'], 'costs': []}
+            fields[name] = {'acres': entry['acres'], 'crop_type': '', 'costs': []}
+        if entry.get('crop_type'):
+            fields[name]['crop_type'] = entry['crop_type']
         fields[name]['costs'].append({
             'input_type': entry['input_type'],
             'cost': float(entry['cost']),
@@ -84,7 +87,9 @@ def summary():
     for entry in entries:
         name = entry['field_name']
         if name not in fields:
-            fields[name] = {'acres': float(entry['acres']), 'total_cost': 0}
+            fields[name] = {'acres': float(entry['acres']), 'crop_type': '', 'total_cost': 0}
+        if entry.get('crop_type'):
+            fields[name]['crop_type'] = entry['crop_type']
         fields[name]['total_cost'] += float(entry['cost'])
     for field in fields.values():
         field['cost_per_acre'] = field['total_cost'] / field['acres']
@@ -119,6 +124,7 @@ def edit_entry(index):
         entries[index] = {
             'field_name': request.form['field_name'],
             'acres': request.form['acres'],
+            'crop_type': request.form.get('crop_type', ''),
             'input_type': input_type,
             'cost': request.form['cost'],
             'quantity': request.form.get('quantity', ''),
@@ -143,7 +149,9 @@ def download_pdf():
     for entry in entries:
         name = entry['field_name']
         if name not in fields:
-            fields[name] = {'acres': float(entry['acres']), 'total_cost': 0}
+            fields[name] = {'acres': float(entry['acres']), 'crop_type': '', 'total_cost': 0}
+        if entry.get('crop_type'):
+            fields[name]['crop_type'] = entry['crop_type']
         fields[name]['total_cost'] += float(entry['cost'])
     for field in fields.values():
         field['cost_per_acre'] = field['total_cost'] / field['acres']
@@ -168,7 +176,10 @@ def download_pdf():
         p.drawString(50, y, f"Field: {field_name}")
         y -= 20
         p.setFont("Helvetica", 12)
-        p.drawString(50, y, f"Acres: {field['acres']}")
+        crop_line = f"Acres: {field['acres']}"
+        if field.get('crop_type'):
+            crop_line += f"  |  Crop: {field['crop_type']}"
+        p.drawString(50, y, crop_line)
         y -= 20
         p.drawString(50, y, f"Total Cost: ${field['total_cost']:.2f}")
         y -= 20

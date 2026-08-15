@@ -151,7 +151,7 @@
                 <h2>{{ field_name }}</h2>
                 <div class="field-meta">
                     <div class="cpa">${{ "%.2f"|format(field_data.costs|sum(attribute='cost') / field_data.acres|float) }}/ac</div>
-                    <div class="acres">{{ field_data.acres }} acres</div>
+                    <div class="acres">{{ field_data.acres }} acres{% if field_data.crop_type %} · {{ field_data.crop_type }}{% endif %}</div>
                 </div>
             </div>
             <div class="entries-list">

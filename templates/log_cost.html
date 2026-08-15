@@ -146,6 +146,21 @@
                     <input type="number" name="acres" id="acres_input" placeholder="e.g. 320" required>
                 </div>
                 <div class="field-group">
+                    <label>Crop Type</label>
+                    <select name="crop_type" id="crop_type_select">
+                        <option value="">— Select Crop —</option>
+                        <option>Wheat</option>
+                        <option>Canola</option>
+                        <option>Barley</option>
+                        <option>Corn</option>
+                        <option>Soybeans</option>
+                        <option>Oats</option>
+                        <option>Flax</option>
+                        <option>Sunflowers</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="field-group">
                     <label>Input Type</label>
                     <select name="input_type" id="input_type_select" required onchange="toggleQuantity(this); toggleCustomInput(this);">
                         <option value="">— Select Input Type —</option>
