@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fadeEl.classList.add('fade-out');
             setTimeout(function() {
                 window.location.href = href;
-            }, 180);
+            }, 350);
         });
     });
 });
