@@ -5,206 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FarmTrack - Season Summary</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --green: #2c5f2e;
-            --green-dark: #1e4020;
-            --amber: #c97d10;
-            --bg: #f2ede4;
-            --card: #ffffff;
-            --text: #1a1a1a;
-            --muted: #6b7280;
-            --border: #e0d8cc;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding-bottom: 100px;
-        }
-        .hero {
-            background: var(--green);
-            padding: 20px 20px 24px;
-        }
-        .hero-top {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-        .back-btn { color: white; text-decoration: none; font-size: 20px; }
-        .hero-top h1 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: 0.5px;
-        }
-        .hero-stat .stat-label {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 4px;
-        }
-        .hero-stat .stat-value {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 44px;
-            font-weight: 700;
-            color: #f0c060;
-            line-height: 1;
-        }
-        .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 16px 16px 0;
-        }
-        .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px 16px;
-        }
-        .stat-card .sc-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--muted);
-            margin-bottom: 6px;
-        }
-        .stat-card .sc-value {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--green);
-        }
-        .content { padding: 16px; }
-        .section-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--muted);
-            margin-bottom: 12px;
-            margin-top: 4px;
-        }
-        .field-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-        .field-card-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .field-name {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--green);
-        }
-        .field-acres {
-            font-size: 13px;
-            color: var(--muted);
-            background: var(--bg);
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
-        .field-card-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-        }
-        .field-stat {
-            padding: 14px 16px;
-            border-right: 1px solid var(--border);
-        }
-        .field-stat:last-child { border-right: none; }
-        .field-stat .fs-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--muted);
-            margin-bottom: 4px;
-        }
-        .field-stat .fs-value {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--amber);
-        }
-        .download-btn {
-            display: block;
-            width: 100%;
-            padding: 18px;
-            background: var(--green);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            margin-top: 8px;
-        }
-        .download-btn:active { background: var(--green-dark); }
-        .download-sub {
-            text-align: center;
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 8px;
-        }
-        .empty-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 32px 20px;
-            text-align: center;
-        }
-        .empty-card p { color: var(--muted); margin-bottom: 12px; }
-        .empty-card a { color: var(--green); font-weight: 600; text-decoration: none; }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: white;
-            border-top: 1px solid var(--border);
-            display: flex;
-            padding: 8px 0 12px;
-        }
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            text-decoration: none;
-            color: var(--muted);
-            font-size: 11px;
-            font-weight: 500;
-            padding: 6px 0;
-        }
-        .nav-item.active { color: var(--green); }
-        .nav-item .nav-icon { font-size: 20px; }
-        @media print {
-            .bottom-nav, .download-btn, .download-sub, .back-btn { display: none; }
-            body { background: white; padding: 0; }
-        }
-    </style>
+    
+    <link rel="stylesheet" href="/static/style.css?v=2">
 </head>
 <body>
+<div id="page-fade" style="opacity:0;">
     <div class="hero">
         <div class="hero-top">
             <a href="/" class="back-btn">←</a>
@@ -248,7 +53,7 @@
         </div>
         {% endfor %}
         <a href="/download" class="download-btn">⬇ DOWNLOAD PDF REPORT</a>
-        <p class="download-sub">Manitoba Farm Input Cost Report</p>
+        <p class="download-sub">Manitoba Grain Farm Cost Report — Ready for Your Accountant</p>
         {% else %}
         <div class="empty-card">
             <p>No entries yet.</p>
@@ -270,5 +75,7 @@
             <span class="nav-icon">📊</span>Summary
         </a>
     </nav>
+    <script src="/static/transitions.js"></script>
+</div>
 </body>
 </html>

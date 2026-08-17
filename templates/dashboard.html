@@ -5,139 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FarmTrack</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --green: #2c5f2e;
-            --green-dark: #1e4020;
-            --amber: #c97d10;
-            --bg: #f2ede4;
-            --card: #ffffff;
-            --text: #1a1a1a;
-            --muted: #6b7280;
-            --border: #e0d8cc;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-        .top-bar {
-            background: var(--green);
-            padding: 20px 20px 16px;
-        }
-        .top-bar h1 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: 1px;
-        }
-        .top-bar p {
-            color: rgba(255,255,255,0.7);
-            font-size: 13px;
-            margin-top: 2px;
-        }
-        .content { padding: 20px 16px; }
-        .section-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
-        .primary-action {
-            display: block;
-            background: var(--green);
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            padding: 22px 20px;
-            margin-bottom: 12px;
-        }
-        .primary-action .action-label {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        .primary-action .action-sub {
-            font-size: 13px;
-            color: rgba(255,255,255,0.7);
-            margin-top: 3px;
-        }
-        .primary-action .action-arrow {
-            float: right;
-            font-size: 24px;
-            margin-top: -2px;
-        }
-        .actions-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-        .action-card {
-            display: block;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 18px 16px;
-            text-decoration: none;
-            color: var(--text);
-        }
-        .action-card .ac-icon { font-size: 22px; margin-bottom: 8px; }
-        .action-card .ac-label {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--green);
-        }
-        .action-card .ac-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-        .info-strip {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .info-strip .dot {
-            width: 8px; height: 8px;
-            background: var(--amber);
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .info-strip p { font-size: 13px; color: var(--muted); }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: white;
-            border-top: 1px solid var(--border);
-            display: flex;
-            padding: 8px 0 12px;
-        }
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            text-decoration: none;
-            color: var(--muted);
-            font-size: 11px;
-            font-weight: 500;
-            padding: 6px 0;
-        }
-        .nav-item.active { color: var(--green); }
-        .nav-item .nav-icon { font-size: 20px; }
-    </style>
+    
+    <link rel="stylesheet" href="/static/style.css?v=2">
 </head>
 <body>
+<div id="page-fade" style="opacity:0;">
     <div class="top-bar">
         <h1>FARMTRACK</h1>
         <p>Essential Mobile Record Keeping for Grain Farmers</p>
@@ -181,5 +53,7 @@
             <span class="nav-icon">📊</span>Summary
         </a>
     </nav>
+    <script src="/static/transitions.js"></script>
+</div>
 </body>
 </html>
