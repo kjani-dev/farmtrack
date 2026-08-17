@@ -1,15 +1,13 @@
-// FarmTrack transition system - smooth page navigation + save confirmation
+// FarmTrack transition system - smooth page navigation + confirmation modals
 
 document.addEventListener('DOMContentLoaded', function() {
     const fadeEl = document.getElementById('page-fade');
     if (!fadeEl) return;
 
-    // Fade in on load
     requestAnimationFrame(function() {
         fadeEl.style.opacity = '1';
     });
 
-    // Intercept internal nav links for fade-out transition
     document.querySelectorAll('a[href^="/"]').forEach(function(link) {
         link.addEventListener('click', function(e) {
             const href = link.getAttribute('href');
@@ -23,25 +21,57 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Call this after a successful save to show confirmation before redirect
-function confirmDelete(link) {
-    if (!confirm('Delete this entry? This cannot be undone.')) {
-        return false;
-    }
-    const href = link.getAttribute('href');
-    showSaveToast('Entry deleted', href, 500);
-    return false;
-}
+// Big centered confirmation card - type: 'save', 'edit', or 'delete'
+function showConfirmCard(type, title, redirectUrl, delay) {
+    const icons = { save: '✓', edit: '✏️', delete: '🗑️' };
+    const iconClass = { save: 'icon-save', edit: 'icon-edit', delete: 'icon-delete' };
 
-function showSaveToast(message, redirectUrl, delay) {
-    const toast = document.createElement('div');
-    toast.className = 'save-toast';
-    toast.textContent = message || 'Entry saved ✓';
-    document.body.appendChild(toast);
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.innerHTML =
+        '<div class="confirm-card">' +
+        '<div class="confirm-icon ' + iconClass[type] + '">' + icons[type] + '</div>' +
+        '<div class="confirm-title">' + title + '</div>' +
+        '</div>';
+    document.body.appendChild(overlay);
+
     requestAnimationFrame(function() {
-        toast.classList.add('show');
+        overlay.classList.add('show');
     });
+
     setTimeout(function() {
         if (redirectUrl) window.location.href = redirectUrl;
-    }, delay || 700);
+    }, delay || 900);
+}
+
+// Custom delete confirmation dialog - replaces native browser confirm()
+function confirmDelete(link) {
+    const href = link.getAttribute('href');
+
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.innerHTML =
+        '<div class="confirm-card">' +
+        '<div class="confirm-icon icon-delete">🗑️</div>' +
+        '<div class="confirm-title">Delete this entry?</div>' +
+        '<div class="confirm-actions">' +
+        '<button class="confirm-btn btn-cancel" id="cancelDeleteBtn">Cancel</button>' +
+        '<button class="confirm-btn btn-danger" id="confirmDeleteBtn">Delete</button>' +
+        '</div></div>';
+    document.body.appendChild(overlay);
+
+    requestAnimationFrame(function() {
+        overlay.classList.add('show');
+    });
+
+    document.getElementById('cancelDeleteBtn').addEventListener('click', function() {
+        overlay.remove();
+    });
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        overlay.remove();
+        showConfirmCard('delete', 'Entry deleted', href, 700);
+    });
+
+    return false;
 }

@@ -150,8 +150,8 @@
             const btn = form.querySelector('.submit-btn');
             btn.classList.add('saving');
             btn.textContent = 'SAVING...';
-            showSaveToast('Entry saved ✓', null, 600);
-            setTimeout(function() { form.submit(); }, 650);
+            showConfirmCard('save', 'Entry Saved', null, 900);
+            setTimeout(function() { form.submit(); }, 950);
         });
 
         function toggleNewField(select) {

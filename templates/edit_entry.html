@@ -96,8 +96,8 @@ document.querySelector('form').addEventListener('submit', function(e) {
     const btn = form.querySelector('.submit-btn');
     btn.classList.add('saving');
     btn.textContent = 'SAVING...';
-    showSaveToast('Changes saved ✓', null, 600);
-    setTimeout(function() { form.submit(); }, 650);
+    showConfirmCard('edit', 'Changes Saved', null, 900);
+    setTimeout(function() { form.submit(); }, 950);
 });
 </script>
 </div>
