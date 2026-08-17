@@ -24,6 +24,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Call this after a successful save to show confirmation before redirect
+function confirmDelete(link) {
+    if (!confirm('Delete this entry? This cannot be undone.')) {
+        return false;
+    }
+    const href = link.getAttribute('href');
+    showSaveToast('Entry deleted', href, 500);
+    return false;
+}
+
 function showSaveToast(message, redirectUrl, delay) {
     const toast = document.createElement('div');
     toast.className = 'save-toast';

@@ -89,6 +89,17 @@
         });
     </script>
     <script src="/static/transitions.js"></script>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.submit-btn');
+    btn.classList.add('saving');
+    btn.textContent = 'SAVING...';
+    showSaveToast('Changes saved ✓', null, 600);
+    setTimeout(function() { form.submit(); }, 650);
+});
+</script>
 </div>
 </body>
 </html>

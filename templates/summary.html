@@ -52,7 +52,20 @@
             </div>
         </div>
         {% endfor %}
-        <a href="/download" class="download-btn">⬇ DOWNLOAD PDF REPORT</a>
+        <a href="/download" class="download-btn" id="download_btn" onclick="handleDownload(this)">⬇ DOWNLOAD PDF REPORT</a>
+
+<script>
+function handleDownload(btn) {
+    btn.textContent = 'Generating your report...';
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.75';
+    setTimeout(function() {
+        btn.textContent = '⬇ DOWNLOAD PDF REPORT';
+        btn.style.pointerEvents = 'auto';
+        btn.style.opacity = '1';
+    }, 1200);
+}
+</script>
         <p class="download-sub">Manitoba Grain Farm Cost Report — Ready for Your Accountant</p>
         {% else %}
         <div class="empty-card">
