@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function(e) {
             const href = link.getAttribute('href');
             if (link.target === '_blank' || href.startsWith('//')) return;
+            if (href.startsWith('/delete/')) return;
             e.preventDefault();
             fadeEl.classList.add('fade-out');
             setTimeout(function() {
@@ -45,7 +46,9 @@ function showConfirmCard(type, title, redirectUrl, delay) {
 }
 
 // Custom delete confirmation dialog - replaces native browser confirm()
-function confirmDelete(link) {
+function confirmDelete(event, link) {
+    event.preventDefault();
+    event.stopPropagation();
     const href = link.getAttribute('href');
 
     const overlay = document.createElement('div');
