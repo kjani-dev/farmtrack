@@ -45,6 +45,39 @@ function showConfirmCard(type, title, redirectUrl, delay) {
     }, delay || 900);
 }
 
+// Custom logout confirmation dialog
+function confirmLogout(event, link) {
+    event.preventDefault();
+    event.stopPropagation();
+    const href = link.getAttribute('href');
+
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.innerHTML =
+        '<div class="confirm-card">' +
+        '<div class="confirm-icon icon-edit">👋</div>' +
+        '<div class="confirm-title">Log out of FarmTrack?</div>' +
+        '<div class="confirm-actions">' +
+        '<button class="confirm-btn btn-cancel" id="cancelLogoutBtn">Cancel</button>' +
+        '<button class="confirm-btn btn-danger" id="confirmLogoutBtn">Log Out</button>' +
+        '</div></div>';
+    document.body.appendChild(overlay);
+
+    requestAnimationFrame(function() {
+        overlay.classList.add('show');
+    });
+
+    document.getElementById('cancelLogoutBtn').addEventListener('click', function() {
+        overlay.remove();
+    });
+
+    document.getElementById('confirmLogoutBtn').addEventListener('click', function() {
+        window.location.href = href;
+    });
+
+    return false;
+}
+
 // Custom delete confirmation dialog - replaces native browser confirm()
 function confirmDelete(event, link) {
     event.preventDefault();
