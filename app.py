@@ -220,6 +220,35 @@ def edit_entry(index):
     entry['is_custom_herbicide'] = bool(herb_val) and herb_val not in known_herb_groups
     return render_template('edit_entry.html', entry=entry, index=index)
 
+@app.route('/rotation')
+@login_required
+def rotation():
+    data_file = user_data_file(session['username'])
+    if os.path.exists(data_file):
+        with open(data_file, 'r') as f:
+            entries = json.load(f)
+    else:
+        entries = []
+
+    field_years = {}
+    for entry in entries:
+        field = entry['field_name']
+        crop = entry.get('crop_type', '')
+        date = entry.get('date', '')
+        if not crop or not date:
+            continue
+        year = date[:4]
+        if field not in field_years:
+            field_years[field] = {}
+        field_years[field][year] = crop
+
+    fields_rotation = {}
+    for field, years in field_years.items():
+        sorted_years = sorted(years.keys(), reverse=True)
+        fields_rotation[field] = [(y, years[y]) for y in sorted_years]
+
+    return render_template('rotation.html', fields_rotation=fields_rotation)
+
 @app.route('/fixed-costs', methods=['GET', 'POST'])
 @login_required
 def fixed_costs():

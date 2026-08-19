@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmTrack - Crop Rotation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+<div id="page-fade" style="opacity:0;">
+    <div class="top-bar">
+        <a href="/" class="back-btn">←</a>
+        <h1>CROP ROTATION</h1>
+    </div>
+    <div class="content">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">See what grew where, by year — built automatically from your logged entries.</p>
+
+        {% if fields_rotation %}
+        {% for field_name, years in fields_rotation.items() %}
+        <div class="field-card" style="margin-bottom:16px;">
+            <div class="field-card-header">
+                <div class="field-name">{{ field_name }}</div>
+            </div>
+            <div style="padding:14px 16px;">
+                {% for year, crop in years %}
+                <div style="display:flex;align-items:center;gap:12px;padding:8px 0;{% if not loop.last %}border-bottom:1px solid var(--border);{% endif %}">
+                    <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--green);min-width:52px;">{{ year }}</div>
+                    <div style="width:8px;height:8px;border-radius:50%;background:var(--amber);"></div>
+                    <div style="font-size:15px;color:var(--text);font-weight:600;">{{ crop }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-card">
+            <div class="empty-icon">🔄</div>
+            <p>No crop rotation history yet.</p>
+            <a href="/log">Log your first entry with a crop type →</a>
+        </div>
+        {% endif %}
+    </div>
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
+    <script src="/static/transitions.js"></script>
+</div>
+</body>
+</html>
