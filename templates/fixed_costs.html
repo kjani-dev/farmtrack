@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmTrack - Fixed Costs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+<div id="page-fade" style="opacity:0;">
+    <div class="top-bar">
+        <a href="/" class="back-btn">←</a>
+        <h1>FIXED COSTS</h1>
+    </div>
+    <div class="content">
+        <div class="form-card">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Whole-farm costs not tied to one field — machinery, insurance, property tax, and more.</p>
+            <form method="POST">
+                <div class="field-group">
+                    <label>Category</label>
+                    <select name="category" id="category_select" required onchange="toggleCustomCategory(this)">
+                        <option value="">— Select Category —</option>
+                        <option>Machinery Ownership</option>
+                        <option>Machinery Repairs</option>
+                        <option>Fuel & Oil (Farm-wide)</option>
+                        <option>Property Tax</option>
+                        <option>Insurance</option>
+                        <option>Labour (Hired/Salaried)</option>
+                        <option>Land Rent</option>
+                        <option>Interest / Loan Payments</option>
+                        <option>Utilities</option>
+                        <option value="__custom__">Other — specify</option>
+                    </select>
+                    <div class="new-field-input" id="custom_category_wrap">
+                        <input type="text" name="custom_category" placeholder="Enter custom category">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label>Cost ($)</label>
+                    <input type="number" name="cost" placeholder="e.g. 12000" required>
+                </div>
+                <div class="field-group">
+                    <label>Notes (optional)</label>
+                    <input type="text" name="notes" placeholder="e.g. Combine payment, Q3">
+                </div>
+                <div class="field-group">
+                    <label>Date</label>
+                    <input type="date" name="date" required>
+                </div>
+                <button type="submit" class="submit-btn">SAVE FIXED COST</button>
+            </form>
+        </div>
+
+        {% if entries %}
+        <div class="season-header" style="margin-top:20px;">
+            <div class="total-label" style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.7);">Total Fixed Costs</div>
+            <div class="total-value" style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--amber-light);">${{ "%.2f"|format(total_fixed) }}</div>
+        </div>
+
+        <div class="entries-list" style="margin-top:12px;">
+            {% for entry in entries %}
+            <div class="entry-row">
+                <div class="entry-info">
+                    <div class="entry-type">{{ entry.category }}</div>
+                    <div class="entry-date">{{ entry.date }}{% if entry.notes %} · {{ entry.notes }}{% endif %}</div>
+                </div>
+                <div class="entry-cost">${{ "%.2f"|format(entry.cost|float) }}</div>
+                <div class="entry-actions">
+                    <a href="/fixed-costs/delete/{{ entry.real_index }}" class="action-link" onclick="confirmDelete(event, this); return false;">🗑️</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-card">
+            <div class="empty-icon">💰</div>
+            <p>No fixed costs logged yet.</p>
+        </div>
+        {% endif %}
+    </div>
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
+    <script>
+        function toggleCustomCategory(select) {
+            const wrap = document.getElementById('custom_category_wrap');
+            wrap.classList.toggle('visible', select.value === '__custom__');
+        }
+    </script>
+    <script src="/static/transitions.js"></script>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.submit-btn');
+    btn.classList.add('saving');
+    btn.textContent = 'SAVING...';
+    showConfirmCard('save', 'Fixed Cost Saved', null, 900);
+    setTimeout(function() { form.submit(); }, 950);
+});
+</script>
+</div>
+</body>
+</html>

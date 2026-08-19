@@ -210,6 +210,54 @@ def edit_entry(index):
     entry['is_custom_herbicide'] = bool(herb_val) and herb_val not in known_herb_groups
     return render_template('edit_entry.html', entry=entry, index=index)
 
+@app.route('/fixed-costs', methods=['GET', 'POST'])
+@login_required
+def fixed_costs():
+    data_file = f'{DATA_DIR}/fixedcosts_{session["username"]}.json'
+    if request.method == 'POST':
+        category = request.form['category']
+        if category == '__custom__':
+            category = request.form.get('custom_category', '').strip()
+        entry = {
+            'category': category,
+            'cost': request.form['cost'],
+            'notes': request.form.get('notes', ''),
+            'date': request.form['date']
+        }
+        if os.path.exists(data_file):
+            with open(data_file, 'r') as f:
+                entries = json.load(f)
+        else:
+            entries = []
+        entries.append(entry)
+        with open(data_file, 'w') as f:
+            json.dump(entries, f)
+        return redirect(url_for('fixed_costs'))
+    if os.path.exists(data_file):
+        with open(data_file, 'r') as f:
+            entries = json.load(f)
+    else:
+        entries = []
+    for i, e in enumerate(entries):
+        e['real_index'] = i
+    total_fixed = sum(float(e['cost']) for e in entries)
+    return render_template('fixed_costs.html', entries=entries, total_fixed=total_fixed)
+
+@app.route('/fixed-costs/delete/<int:index>')
+@login_required
+def delete_fixed_cost(index):
+    data_file = f'{DATA_DIR}/fixedcosts_{session["username"]}.json'
+    if os.path.exists(data_file):
+        with open(data_file, 'r') as f:
+            entries = json.load(f)
+    else:
+        entries = []
+    if 0 <= index < len(entries):
+        entries.pop(index)
+    with open(data_file, 'w') as f:
+        json.dump(entries, f)
+    return redirect(url_for('fixed_costs'))
+
 @app.route('/download')
 @login_required
 def download_pdf():
