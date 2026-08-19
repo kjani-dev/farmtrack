@@ -1,19 +1,79 @@
-from flask import Flask, render_template, request, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, Response, session
 import json
 import os
+from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import io
 
 app = Flask(__name__)
+app.secret_key = 'farmtrack-dev-secret-change-later'
+
+USERS_FILE = '/home/farmtrackdev/farmtrack/data/users.json'
+DATA_DIR = '/home/farmtrackdev/farmtrack/data'
+
+def load_users():
+    if os.path.exists(USERS_FILE):
+        with open(USERS_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_users(users):
+    with open(USERS_FILE, 'w') as f:
+        json.dump(users, f)
+
+def user_data_file(username):
+    return f'{DATA_DIR}/entries_{username}.json'
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'username' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username'].strip().lower()
+        password = request.form['password']
+        users = load_users()
+        if username in users:
+            return render_template('signup.html', error='That username is already taken.')
+        users[username] = generate_password_hash(password)
+        save_users(users)
+        session['username'] = username
+        return redirect(url_for('dashboard'))
+    return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username'].strip().lower()
+        password = request.form['password']
+        users = load_users()
+        if username not in users or not check_password_hash(users[username], password):
+            return render_template('login.html', error='Incorrect username or password.')
+        session['username'] = username
+        return redirect(url_for('dashboard'))
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
 @app.route('/')
+@login_required
 def dashboard():
     return render_template('dashboard.html')
 
 @app.route('/log', methods=['GET', 'POST'])
+@login_required
 def log_cost():
-    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
+    data_file = user_data_file(session['username'])
     if request.method == 'POST':
         field_name = request.form['field_name']
         if field_name == '__new__':
@@ -21,7 +81,6 @@ def log_cost():
         input_type = request.form['input_type']
         if input_type == '__custom__':
             input_type = request.form.get('custom_input_type', '').strip()
-
         entry = {
             'field_name': field_name,
             'acres': request.form['acres'],
@@ -53,8 +112,9 @@ def log_cost():
     return render_template('log_cost.html', existing_fields=existing_fields)
 
 @app.route('/view')
+@login_required
 def view_costs():
-    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
+    data_file = user_data_file(session['username'])
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
@@ -78,8 +138,9 @@ def view_costs():
     return render_template('view_costs.html', fields=fields)
 
 @app.route('/summary')
+@login_required
 def summary():
-    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
+    data_file = user_data_file(session['username'])
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
@@ -99,11 +160,14 @@ def summary():
     return render_template('summary.html', fields=fields, grand_total=grand_total)
 
 @app.route('/delete/<int:index>')
+@login_required
 def delete_entry(index):
-    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
+    data_file = user_data_file(session['username'])
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
+    else:
+        entries = []
     if 0 <= index < len(entries):
         entries.pop(index)
     with open(data_file, 'w') as f:
@@ -111,8 +175,9 @@ def delete_entry(index):
     return redirect(url_for('view_costs'))
 
 @app.route('/edit/<int:index>', methods=['GET', 'POST'])
+@login_required
 def edit_entry(index):
-    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
+    data_file = user_data_file(session['username'])
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
@@ -141,8 +206,9 @@ def edit_entry(index):
     return render_template('edit_entry.html', entry=entry, index=index)
 
 @app.route('/download')
+@login_required
 def download_pdf():
-    data_file = '/home/farmtrackdev/farmtrack/data/entries.json'
+    data_file = user_data_file(session['username'])
     if os.path.exists(data_file):
         with open(data_file, 'r') as f:
             entries = json.load(f)
