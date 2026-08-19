@@ -141,7 +141,7 @@ label {
     margin-bottom: 8px;
 }
 
-input, select {
+input:not([type="checkbox"]):not([type="radio"]), select {
     width: 100%;
     padding: 14px 12px;
     border: 1.5px solid var(--border);
@@ -152,6 +152,13 @@ input, select {
     background: var(--bg);
     -webkit-appearance: none;
     transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+input[type="checkbox"], input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--green);
+    cursor: pointer;
 }
 input:focus, select:focus {
     outline: none;
