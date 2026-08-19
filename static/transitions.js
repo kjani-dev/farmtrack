@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const href = link.getAttribute('href');
             if (link.target === '_blank' || href.startsWith('//')) return;
             if (href.startsWith('/delete/')) return;
+            if (href.startsWith('/logout')) return;
             e.preventDefault();
             fadeEl.classList.add('fade-out');
             setTimeout(function() {
