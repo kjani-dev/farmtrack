@@ -66,12 +66,12 @@
                         <input type="text" name="custom_input_type" placeholder="Enter custom input type" value="{% if entry.is_custom_input %}{{ entry.input_type }}{% endif %}">
                     </div>
                 </div>
-                <div class="field-group" id="quantity_wrap">
+                <div class="field-group collapsible" id="quantity_wrap">
                     <label>Quantity (lbs/acre)</label>
                     <input type="number" name="quantity" id="quantity_input" value="{{ entry.quantity or '' }}" placeholder="e.g. 81" step="0.1">
                     <input type="hidden" name="quantity_unit" value="lbs/acre">
                 </div>
-                <div class="field-group" id="herbicide_group_wrap">
+                <div class="field-group collapsible" id="herbicide_group_wrap">
                     <label>Herbicide Group</label>
                     <select name="herbicide_group" id="herbicide_group_select" onchange="toggleCustomHerbicide(this)">
                         <option value="">— Select Group —</option>
