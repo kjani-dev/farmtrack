@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmTrack - {{ equip.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+<div id="page-fade" style="opacity:0;">
+    <div class="top-bar">
+        <a href="/equipment" class="back-btn">←</a>
+        <h1>{{ equip.name }}</h1>
+    </div>
+    <div class="content">
+        <div class="card" style="padding:16px;margin-bottom:16px;">
+            <div style="font-size:13px;color:var(--muted);">
+                {{ equip.equipment_type }}{% if equip.model %} · {{ equip.model }}{% endif %}{% if equip.year %} · {{ equip.year }}{% endif %}
+                {% if equip.serial_number %}<br>Serial #: {{ equip.serial_number }}{% endif %}
+            </div>
+        </div>
+
+        <div class="form-card">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Log a service or maintenance event for this equipment.</p>
+            <form method="POST" action="/equipment/{{ equip.id }}/log">
+                <div class="field-group">
+                    <label>Service Type</label>
+                    <select name="service_type" id="service_type_select" required onchange="toggleCustomService(this)">
+                        <option value="">— Select Service —</option>
+                        <option>Engine Oil</option>
+                        <option>Hydraulic Oil</option>
+                        <option>Transmission Oil</option>
+                        <option>Coolant</option>
+                        <option>Fuel Filter</option>
+                        <option>Air Filter</option>
+                        <option>Planetary & Differential Oil</option>
+                        <option>Fuel/Water Separator</option>
+                        <option>Belt Replacement</option>
+                        <option>Tire Service</option>
+                        <option value="__custom__">Other — specify</option>
+                    </select>
+                    <div class="new-field-input" id="custom_service_wrap">
+                        <input type="text" name="custom_service_type" placeholder="Enter service type">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label>Hours (at time of service)</label>
+                    <input type="number" name="hours" placeholder="e.g. 1807">
+                </div>
+                <div class="field-group">
+                    <label>Date</label>
+                    <input type="date" name="date" required>
+                </div>
+                <div class="field-group">
+                    <label>Notes (optional)</label>
+                    <input type="text" name="notes" placeholder="e.g. Part # 84565867">
+                </div>
+                <button type="submit" class="submit-btn">LOG SERVICE</button>
+            </form>
+        </div>
+
+        {% if maint_records %}
+        <p class="section-label" style="margin-top:20px;">Service History</p>
+        <div class="entries-list">
+            {% for m in maint_records %}
+            <div class="entry-row">
+                <div class="entry-info">
+                    <div class="entry-type">{{ m.service_type }}</div>
+                    <div class="entry-date">{{ m.date }}{% if m.hours %} · {{ m.hours }} hrs{% endif %}{% if m.notes %} · {{ m.notes }}{% endif %}</div>
+                </div>
+                <div class="entry-actions">
+                    <a href="/equipment/{{ equip.id }}/delete-log/{{ m.real_index }}" class="action-link" onclick="confirmDelete(event, this); return false;">🗑️</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-card">
+            <div class="empty-icon">🔧</div>
+            <p>No service history logged yet.</p>
+        </div>
+        {% endif %}
+    </div>
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
+    <script>
+        function toggleCustomService(select) {
+            const wrap = document.getElementById('custom_service_wrap');
+            wrap.classList.toggle('visible', select.value === '__custom__');
+        }
+    </script>
+    <script src="/static/transitions.js"></script>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.submit-btn');
+    btn.classList.add('saving');
+    btn.textContent = 'SAVING...';
+    showConfirmCard('save', 'Service Logged', null, 900);
+    setTimeout(function() { form.submit(); }, 950);
+});
+</script>
+</div>
+</body>
+</html>

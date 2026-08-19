@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmTrack - Equipment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+<div id="page-fade" style="opacity:0;">
+    <div class="top-bar">
+        <a href="/" class="back-btn">←</a>
+        <h1>EQUIPMENT</h1>
+    </div>
+    <div class="content">
+        <div class="form-card">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Add a tractor, combine, or other equipment to start tracking its maintenance.</p>
+            <form method="POST">
+                <div class="field-group">
+                    <label>Equipment Name</label>
+                    <input type="text" name="name" placeholder="e.g. DT550" required>
+                </div>
+                <div class="field-group">
+                    <label>Type</label>
+                    <select name="equipment_type">
+                        <option value="">— Select Type —</option>
+                        <option>Tractor</option>
+                        <option>Combine</option>
+                        <option>Sprayer</option>
+                        <option>Seeder / Air Drill</option>
+                        <option>Grain Cart</option>
+                        <option>Truck</option>
+                        <option>Header</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label>Model</label>
+                    <input type="text" name="model" placeholder="e.g. Versatile DT550">
+                </div>
+                <div class="field-group">
+                    <label>Year</label>
+                    <input type="number" name="year" placeholder="e.g. 2016">
+                </div>
+                <div class="field-group">
+                    <label>Serial Number</label>
+                    <input type="text" name="serial_number" placeholder="e.g. 705970">
+                </div>
+                <button type="submit" class="submit-btn">ADD EQUIPMENT</button>
+            </form>
+        </div>
+
+        {% if equip_list %}
+        <p class="section-label" style="margin-top:20px;">Your Equipment</p>
+        {% for equip in equip_list %}
+        <a href="/equipment/{{ equip.id }}" class="action-card" style="display:block;text-decoration:none;margin-bottom:12px;">
+            <div class="ac-label" style="text-align:left;">{{ equip.name }}</div>
+            <div class="ac-sub" style="text-align:left;">{{ equip.equipment_type }}{% if equip.model %} · {{ equip.model }}{% endif %}{% if equip.year %} · {{ equip.year }}{% endif %}</div>
+        </a>
+        {% endfor %}
+        {% else %}
+        <div class="empty-card">
+            <div class="empty-icon">🚜</div>
+            <p>No equipment added yet.</p>
+        </div>
+        {% endif %}
+    </div>
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
+    <script src="/static/transitions.js"></script>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.submit-btn');
+    btn.classList.add('saving');
+    btn.textContent = 'SAVING...';
+    showConfirmCard('save', 'Equipment Added', null, 900);
+    setTimeout(function() { form.submit(); }, 950);
+});
+</script>
+</div>
+</body>
+</html>

@@ -220,6 +220,99 @@ def edit_entry(index):
     entry['is_custom_herbicide'] = bool(herb_val) and herb_val not in known_herb_groups
     return render_template('edit_entry.html', entry=entry, index=index)
 
+@app.route('/equipment', methods=['GET', 'POST'])
+@login_required
+def equipment():
+    data_file = f'{DATA_DIR}/equipment_{session["username"]}.json'
+    if request.method == 'POST':
+        entry = {
+            'name': request.form['name'],
+            'equipment_type': request.form.get('equipment_type', ''),
+            'model': request.form.get('model', ''),
+            'year': request.form.get('year', ''),
+            'serial_number': request.form.get('serial_number', '')
+        }
+        if os.path.exists(data_file):
+            with open(data_file, 'r') as f:
+                equip_list = json.load(f)
+        else:
+            equip_list = []
+        entry['id'] = len(equip_list)
+        equip_list.append(entry)
+        with open(data_file, 'w') as f:
+            json.dump(equip_list, f)
+        return redirect(url_for('equipment'))
+    if os.path.exists(data_file):
+        with open(data_file, 'r') as f:
+            equip_list = json.load(f)
+    else:
+        equip_list = []
+    return render_template('equipment.html', equip_list=equip_list)
+
+@app.route('/equipment/<int:equip_id>')
+@login_required
+def equipment_detail(equip_id):
+    equip_file = f'{DATA_DIR}/equipment_{session["username"]}.json'
+    maint_file = f'{DATA_DIR}/maintenance_{session["username"]}.json'
+
+    if os.path.exists(equip_file):
+        with open(equip_file, 'r') as f:
+            equip_list = json.load(f)
+    else:
+        equip_list = []
+    equip = next((e for e in equip_list if e['id'] == equip_id), None)
+    if not equip:
+        return redirect(url_for('equipment'))
+
+    if os.path.exists(maint_file):
+        with open(maint_file, 'r') as f:
+            all_maint = json.load(f)
+    else:
+        all_maint = []
+    maint_records = [m for i, m in enumerate(all_maint) if m['equipment_id'] == equip_id]
+    for i, m in enumerate(all_maint):
+        m['real_index'] = i
+    maint_records = [m for m in all_maint if m['equipment_id'] == equip_id]
+
+    return render_template('equipment_detail.html', equip=equip, maint_records=maint_records)
+
+@app.route('/equipment/<int:equip_id>/log', methods=['POST'])
+@login_required
+def log_maintenance(equip_id):
+    maint_file = f'{DATA_DIR}/maintenance_{session["username"]}.json'
+    if os.path.exists(maint_file):
+        with open(maint_file, 'r') as f:
+            all_maint = json.load(f)
+    else:
+        all_maint = []
+    service_type = request.form['service_type']
+    if service_type == '__custom__':
+        service_type = request.form.get('custom_service_type', '').strip()
+    entry = {
+        'equipment_id': equip_id,
+        'service_type': service_type,
+        'hours': request.form.get('hours', ''),
+        'date': request.form['date'],
+        'notes': request.form.get('notes', '')
+    }
+    all_maint.append(entry)
+    with open(maint_file, 'w') as f:
+        json.dump(all_maint, f)
+    return redirect(url_for('equipment_detail', equip_id=equip_id))
+
+@app.route('/equipment/<int:equip_id>/delete-log/<int:index>')
+@login_required
+def delete_maintenance(equip_id, index):
+    maint_file = f'{DATA_DIR}/maintenance_{session["username"]}.json'
+    if os.path.exists(maint_file):
+        with open(maint_file, 'r') as f:
+            all_maint = json.load(f)
+        if 0 <= index < len(all_maint):
+            all_maint.pop(index)
+        with open(maint_file, 'w') as f:
+            json.dump(all_maint, f)
+    return redirect(url_for('equipment_detail', equip_id=equip_id))
+
 @app.route('/bins', methods=['GET', 'POST'])
 @login_required
 def bins():
