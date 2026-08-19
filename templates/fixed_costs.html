@@ -53,9 +53,9 @@
         </div>
 
         {% if entries %}
-        <div class="season-header" style="margin-top:20px;">
-            <div class="total-label" style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.7);">Total Fixed Costs</div>
-            <div class="total-value" style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--amber-light);">${{ "%.2f"|format(total_fixed) }}</div>
+        <div style="background:var(--green);border-radius:var(--radius-lg);padding:20px;margin-top:20px;">
+            <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.75);margin-bottom:4px;">Total Fixed Costs</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--amber-light);">${{ "%.2f"|format(total_fixed) }}</div>
         </div>
 
         <div class="entries-list" style="margin-top:12px;">
