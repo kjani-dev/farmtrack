@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmTrack - Grain Bins</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+<div id="page-fade" style="opacity:0;">
+    <div class="top-bar">
+        <a href="/" class="back-btn">←</a>
+        <h1>GRAIN BINS</h1>
+    </div>
+    <div class="content">
+        <div class="form-card">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Track what's in each bin — bushels and moisture. Safe storage range: 14.5–15.5%.</p>
+            <form method="POST">
+                <div class="field-group">
+                    <label>Bin Name</label>
+                    <input type="text" name="bin_name" placeholder="e.g. North Bin 1" required>
+                </div>
+                <div class="field-group">
+                    <label>Crop Type</label>
+                    <select name="crop_type">
+                        <option value="">— Select Crop —</option>
+                        <option>Wheat</option>
+                        <option>Canola</option>
+                        <option>Barley</option>
+                        <option>Corn</option>
+                        <option>Soybeans</option>
+                        <option>Oats</option>
+                        <option>Flax</option>
+                        <option>Sunflowers</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label>Quantity (bushels)</label>
+                    <input type="number" name="bushels" placeholder="e.g. 10000" required>
+                </div>
+                <div class="field-group">
+                    <label>Moisture (%)</label>
+                    <input type="number" name="moisture" placeholder="e.g. 14.8" step="0.1">
+                </div>
+                <div class="field-group">
+                    <label>Date Checked</label>
+                    <input type="date" name="date" required>
+                </div>
+                <button type="submit" class="submit-btn">SAVE BIN ENTRY</button>
+            </form>
+        </div>
+
+        {% if entries %}
+        <div style="background:var(--green);border-radius:var(--radius-lg);padding:20px;margin-top:20px;">
+            <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.75);margin-bottom:4px;">Total Bushels Stored</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--amber-light);">{{ "{:,.0f}".format(total_bushels) }} bu</div>
+        </div>
+
+        <div class="entries-list" style="margin-top:12px;">
+            {% for entry in entries %}
+            <div class="entry-row">
+                <div class="entry-info">
+                    <div class="entry-type">{{ entry.bin_name }}{% if entry.crop_type %} · {{ entry.crop_type }}{% endif %}</div>
+                    <div class="entry-date">
+                        {{ entry.date }} · {{ "{:,.0f}".format(entry.bushels|float) }} bu
+                        {% if entry.moisture %}
+                            · {{ entry.moisture }}% moisture
+                            {% if entry.moisture_safe == false %}
+                            <span style="color:#a8321f;font-weight:700;"> ⚠ Outside safe range</span>
+                            {% elif entry.moisture_safe == true %}
+                            <span style="color:var(--green);font-weight:700;"> ✓ Safe</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <a href="/bins/delete/{{ entry.real_index }}" class="action-link" onclick="confirmDelete(event, this); return false;">🗑️</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-card">
+            <div class="empty-icon">🌾</div>
+            <p>No bins logged yet.</p>
+        </div>
+        {% endif %}
+    </div>
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
+    <script src="/static/transitions.js"></script>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.submit-btn');
+    btn.classList.add('saving');
+    btn.textContent = 'SAVING...';
+    showConfirmCard('save', 'Bin Entry Saved', null, 900);
+    setTimeout(function() { form.submit(); }, 950);
+});
+</script>
+</div>
+</body>
+</html>

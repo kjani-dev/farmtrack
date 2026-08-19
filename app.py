@@ -220,6 +220,57 @@ def edit_entry(index):
     entry['is_custom_herbicide'] = bool(herb_val) and herb_val not in known_herb_groups
     return render_template('edit_entry.html', entry=entry, index=index)
 
+@app.route('/bins', methods=['GET', 'POST'])
+@login_required
+def bins():
+    data_file = f'{DATA_DIR}/bins_{session["username"]}.json'
+    if request.method == 'POST':
+        entry = {
+            'bin_name': request.form['bin_name'],
+            'crop_type': request.form.get('crop_type', ''),
+            'bushels': request.form['bushels'],
+            'moisture': request.form.get('moisture', ''),
+            'date': request.form['date']
+        }
+        if os.path.exists(data_file):
+            with open(data_file, 'r') as f:
+                entries = json.load(f)
+        else:
+            entries = []
+        entries.append(entry)
+        with open(data_file, 'w') as f:
+            json.dump(entries, f)
+        return redirect(url_for('bins'))
+    if os.path.exists(data_file):
+        with open(data_file, 'r') as f:
+            entries = json.load(f)
+    else:
+        entries = []
+    for i, e in enumerate(entries):
+        e['real_index'] = i
+        try:
+            m = float(e.get('moisture', 0))
+            e['moisture_safe'] = 14.5 <= m <= 15.5
+        except (ValueError, TypeError):
+            e['moisture_safe'] = None
+    total_bushels = sum(float(e['bushels']) for e in entries)
+    return render_template('bins.html', entries=entries, total_bushels=total_bushels)
+
+@app.route('/bins/delete/<int:index>')
+@login_required
+def delete_bin(index):
+    data_file = f'{DATA_DIR}/bins_{session["username"]}.json'
+    if os.path.exists(data_file):
+        with open(data_file, 'r') as f:
+            entries = json.load(f)
+    else:
+        entries = []
+    if 0 <= index < len(entries):
+        entries.pop(index)
+    with open(data_file, 'w') as f:
+        json.dump(entries, f)
+    return redirect(url_for('bins'))
+
 @app.route('/rotation')
 @login_required
 def rotation():
