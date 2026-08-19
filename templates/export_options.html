@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmTrack - Export Spreadsheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+<div id="page-fade" style="opacity:0;">
+    <div class="top-bar">
+        <a href="/equipment" class="back-btn">←</a>
+        <h1>EXPORT SPREADSHEET</h1>
+    </div>
+    <div class="content">
+        <div class="form-card">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Choose which columns to include in your spreadsheet — customize it to match how you already track things.</p>
+            <form method="POST" action="/equipment/export">
+                <div class="field-group">
+                    <label style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0;">
+                        <input type="checkbox" name="columns" value="date" checked style="width:auto;">
+                        Date
+                    </label>
+                </div>
+                <div class="field-group">
+                    <label style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0;">
+                        <input type="checkbox" name="columns" value="service_type" checked style="width:auto;">
+                        Service Type
+                    </label>
+                </div>
+                <div class="field-group">
+                    <label style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0;">
+                        <input type="checkbox" name="columns" value="hours" checked style="width:auto;">
+                        Hours
+                    </label>
+                </div>
+                <div class="field-group">
+                    <label style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0;">
+                        <input type="checkbox" name="columns" value="notes" checked style="width:auto;">
+                        Notes (part #, filter #, etc.)
+                    </label>
+                </div>
+                <button type="submit" class="submit-btn">⬇ DOWNLOAD SPREADSHEET</button>
+            </form>
+        </div>
+        <div class="empty-card" style="margin-top:16px;">
+            <p style="font-size:13px;">One tab per piece of equipment, exactly like a farm maintenance binder — easy to open in Excel or Google Sheets and keep using however you like.</p>
+        </div>
+    </div>
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>Home
+        </a>
+        <a href="/log" class="nav-item">
+            <span class="nav-icon">＋</span>Log
+        </a>
+        <a href="/view" class="nav-item">
+            <span class="nav-icon">📋</span>Fields
+        </a>
+        <a href="/summary" class="nav-item">
+            <span class="nav-icon">📊</span>Summary
+        </a>
+    </nav>
+    <script src="/static/transitions.js"></script>
+</div>
+</body>
+</html>

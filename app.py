@@ -497,5 +497,85 @@ def download_pdf():
     return Response(buffer, mimetype='application/pdf',
         headers={'Content-Disposition': 'attachment;filename=farmtrack_report.pdf'})
 
+@app.route('/equipment/export', methods=['GET', 'POST'])
+@login_required
+def export_equipment():
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill
+
+    equip_file = f'{DATA_DIR}/equipment_{session["username"]}.json'
+    maint_file = f'{DATA_DIR}/maintenance_{session["username"]}.json'
+
+    if os.path.exists(equip_file):
+        with open(equip_file, 'r') as f:
+            equip_list = json.load(f)
+    else:
+        equip_list = []
+    if os.path.exists(maint_file):
+        with open(maint_file, 'r') as f:
+            all_maint = json.load(f)
+    else:
+        all_maint = []
+
+    if request.method == 'GET':
+        return render_template('export_options.html', equip_list=equip_list)
+
+    selected_columns = request.form.getlist('columns')
+    if not selected_columns:
+        selected_columns = ['date', 'service_type', 'hours', 'notes']
+
+    column_labels = {'date': 'Date', 'service_type': 'Service Type', 'hours': 'Hours', 'notes': 'Notes'}
+
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+
+    header_fill = PatternFill(start_color='2C5F2E', end_color='2C5F2E', fill_type='solid')
+    header_font_white = Font(name='Arial', bold=True, size=10, color='FFFFFF')
+
+    if not equip_list:
+        ws = wb.create_sheet('No Equipment')
+        ws['A1'] = 'No equipment logged yet in FarmTrack.'
+    else:
+        for equip in equip_list:
+            sheet_name = equip['name'][:31] if equip['name'] else f"Equipment {equip['id']}"
+            ws = wb.create_sheet(sheet_name)
+
+            ws['A1'] = 'Model'
+            ws['B1'] = equip.get('model', '')
+            ws['A2'] = 'Type'
+            ws['B2'] = equip.get('equipment_type', '')
+            ws['A3'] = 'Year'
+            ws['B3'] = equip.get('year', '')
+            ws['A4'] = 'Serial #'
+            ws['B4'] = equip.get('serial_number', '')
+            for r in range(1, 5):
+                ws.cell(row=r, column=1).font = Font(name='Arial', bold=True, size=10)
+
+            for col, key in enumerate(selected_columns, start=1):
+                cell = ws.cell(row=6, column=col, value=column_labels.get(key, key))
+                cell.font = header_font_white
+                cell.fill = header_fill
+
+            records = [m for m in all_maint if m['equipment_id'] == equip['id']]
+            records.sort(key=lambda x: x.get('date', ''))
+
+            row_num = 7
+            for m in records:
+                for col, key in enumerate(selected_columns, start=1):
+                    ws.cell(row=row_num, column=col, value=m.get(key, ''))
+                row_num += 1
+
+            widths = {'date': 14, 'service_type': 22, 'hours': 10, 'notes': 30}
+            from openpyxl.utils import get_column_letter
+            for col, key in enumerate(selected_columns, start=1):
+                ws.column_dimensions[get_column_letter(col)].width = widths.get(key, 16)
+
+    buffer = io.BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+
+    return Response(buffer, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': 'attachment;filename=farmtrack_equipment_maintenance.xlsx'})
+
 if __name__ == '__main__':
     app.run(debug=True)

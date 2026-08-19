@@ -52,6 +52,7 @@
         </div>
 
         {% if equip_list %}
+        <a href="/equipment/export" class="download-btn" style="display:block;text-align:center;text-decoration:none;margin-top:20px;">⬇ EXPORT AS SPREADSHEET</a>
         <p class="section-label" style="margin-top:20px;">Your Equipment</p>
         {% for equip in equip_list %}
         <a href="/equipment/{{ equip.id }}" class="action-card" style="display:block;text-decoration:none;margin-bottom:12px;">
