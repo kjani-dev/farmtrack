@@ -63,7 +63,7 @@
                         <option value="__custom__">Other — specify</option>
                     </select>
                     <div class="new-field-input" id="custom_input_wrap">
-                        <input type="text" name="custom_input_type" placeholder="Enter custom input type" value="{% if entry.input_type not in ['Seed','46-0-0 (Urea — Nitrogen)','82-0-0 (NH3 — Nitrogen)','28-0-0 (Liquid — Nitrogen)','11-52-0 (MAP — Phosphate)','0-0-60 (Potash)','20.5-0-0-24 (Sulphur)','MES S15 (13-33-0-15)','Herbicide','Fungicide','Insecticide','PPE',\"Labour (Arm's Length)\",'Crop Insurance Premium','Fuel & Oil','Equipment Repairs','Custom Work'] %}{{ entry.input_type }}{% endif %}">
+                        <input type="text" name="custom_input_type" placeholder="Enter custom input type" value="{% if entry.is_custom_input %}{{ entry.input_type }}{% endif %}">
                     </div>
                 </div>
                 <div class="field-group" id="quantity_wrap">
@@ -133,18 +133,11 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const select = document.getElementById('input_type_select');
+            {% if entry.is_custom_input %}
+            select.value = '__custom__';
+            {% endif %}
             toggleQuantity(select);
-
-            const knownValues = ['', 'Seed','46-0-0 (Urea — Nitrogen)','82-0-0 (NH3 — Nitrogen)','28-0-0 (Liquid — Nitrogen)','11-52-0 (MAP — Phosphate)','0-0-60 (Potash)','20.5-0-0-24 (Sulphur)','MES S15 (13-33-0-15)','Herbicide','Fungicide','Insecticide','PPE',"Labour (Arm's Length)",'Crop Insurance Premium','Fuel & Oil','Equipment Repairs','Custom Work'];
-            const currentValue = select.value;
-            let isKnown = false;
-            for (let opt of select.options) {
-                if (opt.value === currentValue && opt.value !== '') isKnown = true;
-            }
-            if (!isKnown && select.selectedIndex === 0) {
-                select.value = '__custom__';
-                toggleCustomInput(select);
-            }
+            toggleCustomInput(select);
         });
     </script>
     <script src="/static/transitions.js"></script>

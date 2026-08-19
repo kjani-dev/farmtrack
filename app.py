@@ -203,6 +203,8 @@ def edit_entry(index):
             json.dump(entries, f)
         return redirect(url_for('view_costs'))
     entry = entries[index]
+    known_types = ['Seed','46-0-0 (Urea — Nitrogen)','82-0-0 (NH3 — Nitrogen)','28-0-0 (Liquid — Nitrogen)','11-52-0 (MAP — Phosphate)','0-0-60 (Potash)','20.5-0-0-24 (Sulphur)','MES S15 (13-33-0-15)','Herbicide','Fungicide','Insecticide','PPE',"Labour (Arm's Length)",'Crop Insurance Premium','Fuel & Oil','Equipment Repairs','Custom Work']
+    entry['is_custom_input'] = entry.get('input_type') not in known_types
     return render_template('edit_entry.html', entry=entry, index=index)
 
 @app.route('/download')
