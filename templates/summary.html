@@ -28,7 +28,23 @@
         </div>
         <div class="stat-card">
             <div class="sc-label">Avg Cost/Acre</div>
-            <div class="sc-value">{% if total_acres > 0 %}${{ "%.2f"|format(grand_total / total_acres) }}{% else %}—{% endif %}</div>
+            <div class="sc-value">{% if total_acres > 0 %}${{ "%.2f"|format(input_total / total_acres) }}{% else %}—{% endif %}</div>
+        </div>
+    </div>
+    <div class="content" style="padding-bottom:0;">
+        <div class="card" style="padding:16px;margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--muted);font-size:14px;">Input Costs (by field)</span>
+                <span style="font-weight:700;color:var(--amber);">${{ "%.2f"|format(input_total) }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--muted);font-size:14px;">Fixed Costs (whole-farm)</span>
+                <span style="font-weight:700;color:var(--amber);">${{ "%.2f"|format(fixed_total) }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0 0;">
+                <span style="color:var(--green);font-size:14px;font-weight:700;">Grand Total</span>
+                <span style="font-weight:700;color:var(--green);font-size:18px;">${{ "%.2f"|format(grand_total) }}</span>
+            </div>
         </div>
     </div>
     <div class="content">

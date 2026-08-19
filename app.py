@@ -156,8 +156,18 @@ def summary():
         fields[name]['total_cost'] += float(entry['cost'])
     for field in fields.values():
         field['cost_per_acre'] = field['total_cost'] / field['acres']
-    grand_total = sum(f['total_cost'] for f in fields.values())
-    return render_template('summary.html', fields=fields, grand_total=grand_total)
+    input_total = sum(f['total_cost'] for f in fields.values())
+
+    fixed_file = f'{DATA_DIR}/fixedcosts_{session["username"]}.json'
+    if os.path.exists(fixed_file):
+        with open(fixed_file, 'r') as f:
+            fixed_entries = json.load(f)
+    else:
+        fixed_entries = []
+    fixed_total = sum(float(e['cost']) for e in fixed_entries)
+
+    grand_total = input_total + fixed_total
+    return render_template('summary.html', fields=fields, grand_total=grand_total, input_total=input_total, fixed_total=fixed_total)
 
 @app.route('/delete/<int:index>')
 @login_required
