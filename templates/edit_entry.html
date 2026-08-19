@@ -84,7 +84,7 @@
                         <option {% if entry.herbicide_group == 'Group 14' %}selected{% endif %}>Group 14</option>
                         <option {% if entry.herbicide_group == 'Group 15' %}selected{% endif %}>Group 15</option>
                         <option {% if entry.herbicide_group == 'Group 27' %}selected{% endif %}>Group 27</option>
-                        <option value="__custom_herb__">Other — specify</option>
+                        <option value="__custom_herb__" {% if entry.is_custom_herbicide %}selected{% endif %}>Other — specify</option>
                     </select>
                     <div class="new-field-input" id="custom_herb_wrap">
                         <input type="text" name="custom_herbicide_group" placeholder="Enter herbicide group" value="{% if entry.is_custom_herbicide %}{{ entry.herbicide_group }}{% endif %}">

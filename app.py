@@ -205,6 +205,9 @@ def edit_entry(index):
     entry = entries[index]
     known_types = ['Seed','46-0-0 (Urea — Nitrogen)','82-0-0 (NH3 — Nitrogen)','28-0-0 (Liquid — Nitrogen)','11-52-0 (MAP — Phosphate)','0-0-60 (Potash)','20.5-0-0-24 (Sulphur)','MES S15 (13-33-0-15)','Herbicide','Fungicide','Insecticide','PPE',"Labour (Arm's Length)",'Crop Insurance Premium','Fuel & Oil','Equipment Repairs','Custom Work']
     entry['is_custom_input'] = entry.get('input_type') not in known_types
+    known_herb_groups = ['Group 1','Group 2','Group 4','Group 6','Group 9','Group 10','Group 14','Group 15','Group 27']
+    herb_val = entry.get('herbicide_group', '')
+    entry['is_custom_herbicide'] = bool(herb_val) and herb_val not in known_herb_groups
     return render_template('edit_entry.html', entry=entry, index=index)
 
 @app.route('/download')
