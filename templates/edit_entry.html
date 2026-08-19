@@ -73,7 +73,7 @@
                 </div>
                 <div class="field-group" id="herbicide_group_wrap">
                     <label>Herbicide Group</label>
-                    <select name="herbicide_group" id="herbicide_group_select">
+                    <select name="herbicide_group" id="herbicide_group_select" onchange="toggleCustomHerbicide(this)">
                         <option value="">— Select Group —</option>
                         <option {% if entry.herbicide_group == 'Group 1' %}selected{% endif %}>Group 1</option>
                         <option {% if entry.herbicide_group == 'Group 2' %}selected{% endif %}>Group 2</option>
@@ -84,8 +84,11 @@
                         <option {% if entry.herbicide_group == 'Group 14' %}selected{% endif %}>Group 14</option>
                         <option {% if entry.herbicide_group == 'Group 15' %}selected{% endif %}>Group 15</option>
                         <option {% if entry.herbicide_group == 'Group 27' %}selected{% endif %}>Group 27</option>
-                        <option {% if entry.herbicide_group == 'Other' %}selected{% endif %}>Other</option>
+                        <option value="__custom_herb__">Other — specify</option>
                     </select>
+                    <div class="new-field-input" id="custom_herb_wrap">
+                        <input type="text" name="custom_herbicide_group" placeholder="Enter herbicide group" value="{% if entry.is_custom_herbicide %}{{ entry.herbicide_group }}{% endif %}">
+                    </div>
                 </div>
                 <div class="field-group">
                     <label>Cost ($)</label>
