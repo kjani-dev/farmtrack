@@ -26,7 +26,7 @@
                 </div>
                 <div class="field-group">
                     <label>Crop Type</label>
-                    <select name="crop_type" id="crop_type_select">
+                    <select name="crop_type" id="crop_type_select" onchange="toggleCustomCrop(this)">
                         <option value="">— Select Crop —</option>
                         <option {% if entry.crop_type == 'Wheat' %}selected{% endif %}>Wheat</option>
                         <option {% if entry.crop_type == 'Canola' %}selected{% endif %}>Canola</option>
@@ -36,8 +36,11 @@
                         <option {% if entry.crop_type == 'Oats' %}selected{% endif %}>Oats</option>
                         <option {% if entry.crop_type == 'Flax' %}selected{% endif %}>Flax</option>
                         <option {% if entry.crop_type == 'Sunflowers' %}selected{% endif %}>Sunflowers</option>
-                        <option {% if entry.crop_type == 'Other' %}selected{% endif %}>Other</option>
+                        <option value="__custom_crop__" {% if entry.is_custom_crop %}selected{% endif %}>Other — specify</option>
                     </select>
+                    <div class="new-field-input" id="custom_crop_wrap">
+                        <input type="text" name="custom_crop_type" placeholder="Enter crop type" value="{% if entry.is_custom_crop %}{{ entry.crop_type }}{% endif %}">
+                    </div>
                 </div>
                 <div class="field-group">
                     <label>Input Type</label>
@@ -134,6 +137,16 @@
             wrap.classList.toggle('visible', select.value === '__custom__');
         }
 
+        function toggleCustomCrop(select) {
+            const wrap = document.getElementById('custom_crop_wrap');
+            wrap.classList.toggle('visible', select.value === '__custom_crop__');
+        }
+
+        function toggleCustomHerbicide(select) {
+            const wrap = document.getElementById('custom_herb_wrap');
+            wrap.classList.toggle('visible', select.value === '__custom_herb__');
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const select = document.getElementById('input_type_select');
             {% if entry.is_custom_input %}
@@ -141,6 +154,12 @@
             {% endif %}
             toggleQuantity(select);
             toggleCustomInput(select);
+
+            const cropSelect = document.getElementById('crop_type_select');
+            toggleCustomCrop(cropSelect);
+
+            const herbSelect = document.getElementById('herbicide_group_select');
+            toggleCustomHerbicide(herbSelect);
         });
     </script>
     <script src="/static/transitions.js"></script>

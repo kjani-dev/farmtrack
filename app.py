@@ -198,15 +198,23 @@ def edit_entry(index):
         if input_type == '__custom__':
             input_type = request.form.get('custom_input_type', '').strip()
 
+        crop_type = request.form.get('crop_type', '')
+        if crop_type == '__custom_crop__':
+            crop_type = request.form.get('custom_crop_type', '').strip()
+
+        herbicide_group = request.form.get('herbicide_group', '')
+        if herbicide_group == '__custom_herb__':
+            herbicide_group = request.form.get('custom_herbicide_group', '').strip()
+
         entries[index] = {
             'field_name': request.form['field_name'],
             'acres': request.form['acres'],
-            'crop_type': request.form.get('crop_type', ''),
+            'crop_type': crop_type,
             'input_type': input_type,
             'cost': request.form['cost'],
             'quantity': request.form.get('quantity', ''),
             'quantity_unit': request.form.get('quantity_unit', ''),
-            'herbicide_group': request.form.get('herbicide_group', ''),
+            'herbicide_group': herbicide_group,
             'date': request.form['date']
         }
         with open(data_file, 'w') as f:
@@ -218,6 +226,11 @@ def edit_entry(index):
     known_herb_groups = ['Group 1','Group 2','Group 4','Group 6','Group 9','Group 10','Group 14','Group 15','Group 27']
     herb_val = entry.get('herbicide_group', '')
     entry['is_custom_herbicide'] = bool(herb_val) and herb_val not in known_herb_groups
+
+    known_crops = ['Wheat','Canola','Barley','Corn','Soybeans','Oats','Flax','Sunflowers']
+    crop_val = entry.get('crop_type', '')
+    entry['is_custom_crop'] = bool(crop_val) and crop_val not in known_crops
+
     return render_template('edit_entry.html', entry=entry, index=index)
 
 @app.route('/equipment', methods=['GET', 'POST'])
