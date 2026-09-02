@@ -516,116 +516,6 @@ select {
 }
 
 
-/* ============ DASHBOARD-SPECIFIC STYLES ============ */
-
-.top-bar { flex-wrap: wrap; }
-.top-bar p {
-    flex-basis: 100%;
-    margin-top: 4px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.75);
-    font-family: 'Barlow', sans-serif;
-}
-
-.section-label {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: var(--muted);
-    margin: 24px 0 10px;
-}
-.section-label:first-child { margin-top: 4px; }
-
-.primary-action {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--green);
-    color: white;
-    text-decoration: none;
-    padding: 18px 18px;
-    border-radius: var(--radius-lg);
-    transition: transform var(--transition-fast);
-}
-.primary-action:active { transform: scale(0.98); }
-.action-arrow {
-    font-size: 22px;
-    color: var(--amber-light);
-    flex-shrink: 0;
-}
-.action-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-}
-.action-sub {
-    font-size: 12px;
-    color: rgba(255,255,255,0.7);
-    margin-top: 2px;
-}
-
-.actions-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-.actions-grid .action-card:last-child:nth-child(odd) {
-    grid-column: span 2;
-}
-.action-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px 14px;
-    text-align: center;
-    text-decoration: none;
-    color: var(--text);
-    transition: transform var(--transition-fast), border-color var(--transition-fast);
-}
-.action-card:active {
-    transform: scale(0.97);
-    border-color: var(--green);
-}
-.ac-icon { font-size: 26px; margin-bottom: 8px; }
-.ac-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--green);
-}
-.ac-sub {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
-}
-
-.info-strip {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 14px 16px;
-    margin-top: 24px;
-}
-.info-strip .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--amber);
-    margin-top: 6px;
-    flex-shrink: 0;
-}
-.info-strip p {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.5;
-}
-
-
 /* ============ SUMMARY PAGE STYLES ============ */
 
 .hero {
@@ -753,4 +643,91 @@ select {
     font-size: 12px;
     color: var(--muted);
     margin-top: 10px;
+}
+
+/* COST-PER-ACRE ENTRY MODE (Log Cost form) */
+.cost-mode-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.cost-mode-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+}
+.cost-mode-btn.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+}
+.cost-subfield { display: none; margin-top: 4px; }
+.cost-subfield.visible { display: block; animation: slideDown var(--transition-base); }
+.cost-computed-total {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: var(--radius-md);
+}
+
+/* BREAKEVEN YIELD + GRAIN PRICE (Season Summary field cards) */
+.field-crop-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--green-light);
+    background: rgba(44, 95, 46, 0.1);
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+.field-stat .fs-value.fs-muted {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Barlow', sans-serif;
+}
+.price-inline-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+}
+.price-inline-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.price-inline-form input {
+    padding: 8px 10px;
+    font-size: 14px;
+}
+.price-inline-btn {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--amber);
+    color: white;
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
 }

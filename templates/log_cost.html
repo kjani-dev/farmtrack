@@ -98,8 +98,18 @@
                     </select>
                 </div>
                 <div class="field-group">
-                    <label>Cost ($)</label>
-                    <input type="number" name="cost" placeholder="e.g. 4500" required>
+                    <label>Cost</label>
+                    <div class="cost-mode-toggle">
+                        <button type="button" class="cost-mode-btn active" id="mode_total_btn" onclick="setCostMode('total')">Total $</button>
+                        <button type="button" class="cost-mode-btn" id="mode_peracre_btn" onclick="setCostMode('peracre')">$ / acre</button>
+                    </div>
+                    <div id="cost_total_wrap">
+                        <input type="number" name="cost" id="cost_input" placeholder="e.g. 4500" required>
+                    </div>
+                    <div id="cost_peracre_wrap" class="cost-subfield">
+                        <input type="number" id="cost_peracre_input" placeholder="e.g. 14.50" step="0.01" oninput="recalcFromPerAcre()">
+                        <div class="cost-computed-total" id="cost_computed_total">Total: $0.00</div>
+                    </div>
                 </div>
                 <div class="field-group">
                     <label>Date</label>
@@ -146,12 +156,54 @@
         // Save confirmation toast on submit
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
+            if (costMode === 'peracre') recalcFromPerAcre();
             const form = e.target;
             const btn = form.querySelector('.submit-btn');
             btn.classList.add('saving');
             btn.textContent = 'SAVING...';
             showConfirmCard('save', 'Entry Saved', null, 900);
             setTimeout(function() { form.submit(); }, 950);
+        });
+
+        // COST-PER-ACRE ENTRY MODE — farmers think in $/acre first, not total.
+        // Whichever mode is used, the submitted "cost" field always carries the TOTAL dollar amount.
+        let costMode = 'total';
+
+        function setCostMode(mode) {
+            costMode = mode;
+            document.getElementById('mode_total_btn').classList.toggle('active', mode === 'total');
+            document.getElementById('mode_peracre_btn').classList.toggle('active', mode === 'peracre');
+            const costInput = document.getElementById('cost_input');
+            const peracreInput = document.getElementById('cost_peracre_input');
+            if (mode === 'peracre') {
+                document.getElementById('cost_total_wrap').style.display = 'none';
+                document.getElementById('cost_peracre_wrap').classList.add('visible');
+                costInput.required = false;
+                costInput.readOnly = true;
+                peracreInput.required = true;
+                recalcFromPerAcre();
+            } else {
+                document.getElementById('cost_total_wrap').style.display = 'block';
+                document.getElementById('cost_peracre_wrap').classList.remove('visible');
+                costInput.required = true;
+                costInput.readOnly = false;
+                peracreInput.required = false;
+            }
+        }
+
+        function recalcFromPerAcre() {
+            const acres = parseFloat(document.getElementById('acres_input').value) || 0;
+            const rate = parseFloat(document.getElementById('cost_peracre_input').value) || 0;
+            const total = acres * rate;
+            document.getElementById('cost_input').value = total ? total.toFixed(2) : '';
+            const totalLabel = document.getElementById('cost_computed_total');
+            totalLabel.textContent = acres
+                ? `Total: $${total.toFixed(2)} (${acres} ac × $${rate.toFixed(2)}/ac)`
+                : `Total: $${total.toFixed(2)} — select a field first`;
+        }
+
+        document.getElementById('acres_input').addEventListener('input', function() {
+            if (costMode === 'peracre') recalcFromPerAcre();
         });
 
         function toggleNewField(select) {
@@ -170,6 +222,7 @@
                     acresInput.readOnly = true;
                 }
             }
+            if (costMode === 'peracre') recalcFromPerAcre();
         }
     </script>
     <script src="/static/transitions.js"></script>
