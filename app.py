@@ -137,6 +137,13 @@ def view_costs():
         })
     return render_template('view_costs.html', fields=fields)
 
+def load_grain_prices(username):
+    price_file = f'{DATA_DIR}/grainprices_{username}.json'
+    if os.path.exists(price_file):
+        with open(price_file, 'r') as f:
+            return json.load(f)
+    return {}
+
 @app.route('/summary')
 @login_required
 def summary():
@@ -154,8 +161,17 @@ def summary():
         if entry.get('crop_type'):
             fields[name]['crop_type'] = entry['crop_type']
         fields[name]['total_cost'] += float(entry['cost'])
+
+    grain_prices = load_grain_prices(session['username'])
     for field in fields.values():
         field['cost_per_acre'] = field['total_cost'] / field['acres']
+        price = grain_prices.get(field['crop_type']) if field['crop_type'] else None
+        if price:
+            field['grain_price'] = price
+            field['breakeven_yield'] = field['cost_per_acre'] / price
+        else:
+            field['grain_price'] = None
+            field['breakeven_yield'] = None
     input_total = sum(f['total_cost'] for f in fields.values())
 
     fixed_file = f'{DATA_DIR}/fixedcosts_{session["username"]}.json'
@@ -167,7 +183,25 @@ def summary():
     fixed_total = sum(float(e['cost']) for e in fixed_entries)
 
     grand_total = input_total + fixed_total
-    return render_template('summary.html', fields=fields, grand_total=grand_total, input_total=input_total, fixed_total=fixed_total)
+    return render_template('summary.html', fields=fields, grand_total=grand_total, input_total=input_total, fixed_total=fixed_total, grain_prices=grain_prices)
+
+@app.route('/summary/set-price', methods=['POST'])
+@login_required
+def set_grain_price():
+    crop_type = request.form.get('crop_type', '').strip()
+    price_raw = request.form.get('price', '').strip()
+    if crop_type and price_raw:
+        try:
+            price = float(price_raw)
+        except ValueError:
+            price = None
+        if price and price > 0:
+            price_file = f'{DATA_DIR}/grainprices_{session["username"]}.json'
+            prices = load_grain_prices(session['username'])
+            prices[crop_type] = price
+            with open(price_file, 'w') as f:
+                json.dump(prices, f)
+    return redirect(url_for('summary'))
 
 @app.route('/delete/<int:index>')
 @login_required
@@ -471,8 +505,11 @@ def download_pdf():
         if entry.get('crop_type'):
             fields[name]['crop_type'] = entry['crop_type']
         fields[name]['total_cost'] += float(entry['cost'])
+    grain_prices = load_grain_prices(session['username'])
     for field in fields.values():
         field['cost_per_acre'] = field['total_cost'] / field['acres']
+        price = grain_prices.get(field['crop_type']) if field['crop_type'] else None
+        field['breakeven_yield'] = (field['cost_per_acre'] / price) if price else None
     grand_total = sum(f['total_cost'] for f in fields.values())
 
     buffer = io.BytesIO()
@@ -502,7 +539,11 @@ def download_pdf():
         p.drawString(50, y, f"Total Cost: ${field['total_cost']:.2f}")
         y -= 20
         p.drawString(50, y, f"Cost Per Acre: ${field['cost_per_acre']:.2f}")
-        y -= 30
+        y -= 20
+        if field['breakeven_yield']:
+            p.drawString(50, y, f"Breakeven Yield: {field['breakeven_yield']:.1f} bu/acre")
+            y -= 20
+        y -= 10
 
     p.save()
     buffer.seek(0)
