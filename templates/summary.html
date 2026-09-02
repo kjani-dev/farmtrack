@@ -53,7 +53,7 @@
         {% for field_name, field in fields.items() %}
         <div class="field-card">
             <div class="field-card-header">
-                <div class="field-name">{{ field_name }}</div>
+                <div class="field-name">{{ field_name }}{% if field.crop_type %}<span class="field-crop-badge">{{ field.crop_type }}</span>{% endif %}</div>
                 <div class="field-acres">{{ field.acres }} ac</div>
             </div>
             <div class="field-card-body">
@@ -65,7 +65,23 @@
                     <div class="fs-label">Per Acre</div>
                     <div class="fs-value">${{ "%.2f"|format(field.cost_per_acre) }}/ac</div>
                 </div>
+                <div class="field-stat">
+                    <div class="fs-label">Breakeven Yield</div>
+                    {% if field.breakeven_yield %}
+                    <div class="fs-value">{{ "%.1f"|format(field.breakeven_yield) }} bu/ac</div>
+                    {% else %}
+                    <div class="fs-value fs-muted">Set price →</div>
+                    {% endif %}
+                </div>
             </div>
+            {% if field.crop_type %}
+            <form method="POST" action="/summary/set-price" class="price-inline-form">
+                <input type="hidden" name="crop_type" value="{{ field.crop_type }}">
+                <label class="price-inline-label">{{ field.crop_type }} price ($/bu)</label>
+                <input type="number" step="0.01" min="0.01" name="price" placeholder="e.g. 8.50" value="{{ grain_prices.get(field.crop_type, '') }}">
+                <button type="submit" class="price-inline-btn">Update</button>
+            </form>
+            {% endif %}
         </div>
         {% endfor %}
         <a href="/download" class="download-btn" id="download_btn" onclick="handleDownload(this)">⬇ DOWNLOAD PDF REPORT</a>
